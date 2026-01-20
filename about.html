@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us Alaska State Roleplay</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg: #050505;
+            --glass: rgba(15, 15, 18, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #ffffff;
+            --text-dim: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background: var(--bg); 
+            color: white; 
+            overflow-x: hidden; 
+            -webkit-font-smoothing: antialiased;
+        }
+        .nav-container {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1100px;
+            z-index: 1000;
+        }
+
+        nav {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 14px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .nav-brand { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            text-decoration: none; 
+            color: white; 
+            font-weight: 800; 
+            font-size: 1.1rem;
+        }
+        .nav-brand img { height: 32px; width: auto; transition: transform 0.3s; }
+        .nav-brand:hover img { transform: rotate(-10deg); }
+
+        .nav-links { 
+            display: flex; 
+            list-style: none; 
+            gap: 40px; 
+            margin: 0 20px;
+        }
+        .nav-links a { 
+            text-decoration: none; 
+            color: var(--text-dim); 
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            letter-spacing: 1px; 
+            transition: 0.3s;
+        }
+        .nav-links a:hover { color: white; }
+
+        .btn-premium {
+            background: white;
+            color: black;
+            padding: 12px 30px;
+            border-radius: 100px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 0.85rem;
+            transition: 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        .btn-premium:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 0 25px rgba(255,255,255,0.3); 
+        }
+
+        .mobile-toggle { display: none; cursor: pointer; color: white; height: 32px; width: 32px; align-items: center; justify-content: center; }
+        .hero {
+            height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: 
+                linear-gradient(rgba(5,5,5,0.6), var(--bg)),
+                url('aboutimage.png'); 
+            background-size: cover;
+            background-position: center;
+            padding: 0 5%;
+        }
+        .about-section { padding: 100px 10%; max-width: 1200px; margin: 0 auto; }
+        
+        .story-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            margin-bottom: 100px;
+        }
+
+        .story-text h2 { font-size: 3rem; margin-bottom: 20px; letter-spacing: -2px; }
+        .story-text p { color: var(--text-dim); line-height: 1.8; font-size: 1.1rem; margin-bottom: 20px; }
+        .square-img-container {
+            background: url('about.png'); 
+            background-size: cover;
+            background-position: center;
+            height: 450px;
+            border-radius: 32px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .values-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 30px; 
+            margin: 60px 0;
+        }
+        .card {
+            background: #0b0b0d;
+            border: 1px solid var(--border);
+            padding: 50px 40px;
+            border-radius: 32px;
+            transition: 0.5s;
+        }
+        .card:hover { transform: translateY(-10px); border-color: white; }
+        .card i { font-size: 2.5rem; margin-bottom: 25px; color: white; }
+        footer { padding: 100px 10% 40px; border-top: 1px solid var(--border); background: #030303; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 80px; }
+        .footer-col h4 { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 30px; }
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 15px; }
+        .footer-col a { color: var(--text-dim); text-decoration: none; font-size: 0.95rem; transition: 0.3s; }
+        .footer-col a:hover { color: white; padding-left: 5px; }
+        
+        .footer-bottom {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            color: #444;
+            font-weight: 800;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+        }
+        .mobile-hud {
+            position: fixed;
+            inset: 0;
+            background: rgba(5,5,5,0.98);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 35px;
+            transform: translateY(-100%);
+            transition: 0.6s cubic-bezier(0.8, 0, 0.2, 1);
+        }
+        .mobile-hud.active { transform: translateY(0); }
+        .mobile-hud a { font-size: 2.5rem; font-weight: 800; color: white; text-decoration: none; }
+
+        @media (max-width: 1024px) {
+            .nav-links, .nav-container .btn-premium { display: none; }
+            .mobile-toggle { display: flex; }
+            .story-grid, .values-grid { grid-template-columns: 1fr; text-align: center; }
+            .footer-grid { grid-template-columns: 1fr; text-align: center; }
+            .square-img-container { height: 300px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-container">
+        <nav>
+            <a href="index.html" class="nav-brand">
+                <img src="logo.png" alt="Logo">
+                <span>ALASKA.</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html" style="color: white;">About Us</a></li>
+                <li><a href="rules.html">Rules</a></li>
+                <li><a href="https://discord.gg/alaskas">Discord</a></li>
+            </ul>
+            <a href="roblox://placeId=2534724415&launchData=%7B%22psCode%22%3A%22ASRUSA%22%7D" class="btn-premium">JOIN SERVER</a>
+            <div class="mobile-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars-staggered" style="font-size: 1.5rem;"></i>
+            </div>
+        </nav>
+    </div>
+
+    <div class="mobile-hud" id="mobileMenu">
+        <i class="fas fa-times" style="position: absolute; top: 40px; right: 40px; font-size: 2rem;" onclick="toggleMenu()"></i>
+        <a href="index.html" onclick="toggleMenu()">HOME</a>
+        <a href="about.html" onclick="toggleMenu()">ABOUT US</a>
+        <a href="rules.html" onclick="toggleMenu()">RULES</a>
+        <a href="https://discord.gg/alaskas" class="btn-premium" style="color: black !important; font-size: 1.2rem;">JOIN DISCORD</a>
+    </div>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1 id="aboutTitle" style="font-size: clamp(3rem, 8vw, 6rem); font-weight: 800; letter-spacing: -3px;">OUR STORY.</h1>
+        </div>
+    </section>
+
+    <section class="about-section">
+        <div class="story-grid reveal">
+            <div class="story-text">
+                <h2>The Vision</h2>
+                <p>Alaska State Roleplay is a new immersive roleplay server based on the game Emergency Response: Liberty County. We didn't just want to make another server; we wanted to create a destination for those who value realism and storytelling.</p>
+                <p>From the rugged terrain of the frontier to the organized chaos of the urban centers, every detail is designed to make you feel like you are truly part of the Alaskan landscape. We hope to see you soon!</p>
+            </div>
+            <div class="story-text">
+                <div class="square-img-container reveal"></div>
+            </div>
+        </div>
+
+        <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 40px;" class="reveal">Core Foundations</h2>
+        
+        <div class="values-grid">
+            <div class="card reveal">
+                <i class="fas fa-users-gear"></i>
+                <h3>Professionalism</h3>
+                <p>Our staff and department heads are trained to maintain a high standard of conduct at all times.</p>
+            </div>
+            <div class="card reveal">
+                <i class="fas fa-brain"></i>
+                <h3>Creative Liberty</h3>
+                <p>We provide the tools; you provide the story. Your character's journey is entirely in your hands.</p>
+            </div>
+            <div class="card reveal">
+                <i class="fas fa-handshake-angle"></i>
+                <h3>Supportive</h3>
+                <p>Whether you are a veteran or new to ER:LC, our community is here to help you grow.</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 80px;" class="reveal">
+            <a href="#" class="btn-premium" style="padding: 22px 60px; font-size: 1.1rem;">JOIN THE DISCORD</a>
+        </div>
+    </section>
+
+<footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="nav-brand">
+                    <img src="logo.png" alt="Logo">
+                    <span>ALASKA.</span>
+                </div>
+                <p style="color: var(--text-dim); margin-top: 20px; line-height: 1.6;">Professional community management for ER:LC. Dedicated to high-stakes immersion and scale.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Internal</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="rules.html">Rules</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 ALASKA STATE ROLEPLAY • ALL RIGHTS RESERVED</span>
+            
+            <div id="serverStatus" class="status-pill">
+                <div class="status-dot"></div>
+                <span id="statusText">Fetching status...</span>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.03);
+            padding: 8px 16px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            font-size: 0.75rem;
+            color: white;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #444; /* Default gray */
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        .status-dot.online {
+            background: #22c55e; /* Green */
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+        }
+        .status-dot.offline {
+            background: #ef4444; /* Red */
+        }
+    </style>
+
+    <script src="script.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+
+    <script>
+        const lenis = new Lenis({ duration: 1.5 });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.from(".nav-container", { y: -50, opacity: 0, duration: 1, ease: "power4.out" });
+        gsap.from("#aboutTitle", { opacity: 0, y: 50, duration: 1.2, delay: 0.3 });
+        gsap.utils.toArray(".reveal").forEach(el => {
+            gsap.from(el, {
+                scrollTrigger: { trigger: el, start: "top 90%" },
+                opacity: 0, y: 40, duration: 1
+            });
+        });
+
+        function toggleMenu() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
