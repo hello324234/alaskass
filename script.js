@@ -1,13 +1,11 @@
-
-
 async function fetchServerStatus() {
     const statusText = document.getElementById('statusText');
     const statusDot = document.querySelector('.status-dot');
 
     try {
-        const response = await fetch(`https://corsproxy.io/?https://api.policeroleplay.community/v1/server?t=${Date.now()}`, {
-            headers: { 'Server-Key': API_KEY }
-        });
+        // CHANGED: We now fetch from your own site's /api/status folder
+        // This is where the secret key is hidden!
+        const response = await fetch('/api/status');
 
         if (!response.ok) throw new Error('API Response Error');
 
@@ -36,5 +34,4 @@ async function fetchServerStatus() {
 }
 
 fetchServerStatus();
-
 setInterval(fetchServerStatus, 30000);
