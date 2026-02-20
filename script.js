@@ -1,4 +1,4 @@
-const API_KEY = 'TmKBpFoLsUVwoqynGEsi-fkSFzIpwVSNrjfmTzGLttqjnztUyiWgjXgRvsvyU'; 
+
 
 async function fetchServerStatus() {
     const statusText = document.getElementById('statusText');
@@ -36,4 +36,5 @@ async function fetchServerStatus() {
 }
 
 fetchServerStatus();
+
 setInterval(fetchServerStatus, 30000);
