@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        :root { --police: #007bff; --civ: #f1c40f; --wanted: #e74c3c; }
+        
+        #map-wrapper {
+            position: relative;
+            display: inline-block;
+            background: #1a1a1a;
+            border: 4px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #map-img {
+            display: block;
+            width: 1000px; /* Adjust to your preference */
+            height: auto;
+        }
+
+        .blip {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #000;
+            border-radius: 50%;
+            transform: translate(-50%, -50%); /* Centers the blip */
+            transition: all 1.5s linear; /* Smooth sliding movement */
+            z-index: 10;
+        }
+
+        .blip.Police { background-color: var(--police); box-shadow: 0 0 10px var(--police); }
+        .blip.Civilian { background-color: var(--civ); }
+        .blip.wanted { background-color: var(--wanted); border-color: white; }
+    </style>
+</head>
+<body>
+
+    <div id="map-wrapper">
+        <img src="erlc_map_bg.png" id="map-img">
+        <div id="marker-layer"></div>
+    </div>
+
+    <script>
+        // COORDINATE CALIBRATION: 
+        // These numbers define the "edges" of your erlc_map_bg.png in game-coords.
+        const MAP_BOUNDS = {
+            minX: -6000, maxX: 6000,
+            minZ: -6000, maxZ: 6000
+        };
+
+        async function updateLiveMap() {
+            try {
+                const response = await fetch('/api/map-data');
+                const data = await response.json();
+                const layer = document.getElementById('marker-layer');
+                
+                // Clear old blips (or update them for even smoother motion)
+                layer.innerHTML = ''; 
+
+                data.Players.forEach(p => {
+                    if (!p.Location) return;
+
+                    const blip = document.createElement('div');
+                    
+                    // Determine color based on team
+                    let teamClass = p.Team.includes('Police') || p.Team.includes('Sheriff') ? 'Police' : 'Civilian';
+                    blip.className = `blip ${teamClass}`;
+
+                    // Convert Game Coords to % positions
+                    const xPos = ((p.Location.LocationX - MAP_BOUNDS.minX) / (MAP_BOUNDS.maxX - MAP_BOUNDS.minX)) * 100;
+                    const zPos = ((p.Location.LocationZ - MAP_BOUNDS.minZ) / (MAP_BOUNDS.maxZ - MAP_BOUNDS.minZ)) * 100;
+
+                    blip.style.left = `${xPos}%`;
+                    blip.style.top = `${zPos}%`;
+                    blip.title = `${p.Player} (${p.Team})`;
+
+                    layer.appendChild(blip);
+                });
+            } catch (err) {
+                console.error("Map Update Failed:", err);
+            }
+        }
+
+        // Auto-refresh every 3 seconds
+        setInterval(updateLiveMap, 3000);
+        updateLiveMap();
+    </script>
+</body>
+</html>
