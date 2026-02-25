@@ -11,9 +11,13 @@
     <style>
         :root {
             --bg: #050505;
+            --bg-soft: #0d0d11;
             --glass: rgba(15, 15, 18, 0.7);
             --border: rgba(255, 255, 255, 0.08);
             --text-dim: #94a3b8;
+            --accent: #38bdf8;
+            --success: #22c55e;
+            --warning: #f59e0b;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -31,47 +35,117 @@
         .mobile-toggle { display: none; cursor: pointer; color: white; height: 32px; width: 32px; align-items: center; justify-content: center; }
 
         .page-header {
-            min-height: 60vh;
+            min-height: 65vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 180px 10% 80px;
-            background: linear-gradient(rgba(5,5,5,0.75), var(--bg)), url('landingimage.png');
+            padding: 180px 10% 100px;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(56,189,248,0.15), transparent 35%),
+                radial-gradient(circle at 80% 30%, rgba(34,197,94,0.12), transparent 30%),
+                linear-gradient(rgba(5,5,5,0.8), var(--bg)),
+                url('landingimage.png');
             background-size: cover;
             background-position: center;
         }
 
-        .page-header p { color: var(--text-dim); max-width: 760px; margin: 20px auto 0; line-height: 1.7; }
+        .page-header p { color: var(--text-dim); max-width: 800px; margin: 20px auto 0; line-height: 1.7; }
 
         .map-section { padding: 0 10% 120px; max-width: 1400px; margin: 0 auto; }
         .panel {
-            background: #0b0b0d;
+            background: linear-gradient(180deg, #101014 0%, #0b0b0d 100%);
             border: 1px solid var(--border);
             border-radius: 30px;
             padding: 24px;
             margin-top: 30px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
         }
 
-        .map-image {
-            width: 100%;
-            height: auto;
-            border-radius: 22px;
-            border: 1px solid var(--border);
-            display: block;
-            margin-bottom: 18px;
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: -60px;
+            position: relative;
+            z-index: 20;
         }
+
+        .stat-card {
+            background: rgba(8, 8, 12, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 16px;
+        }
+
+        .stat-label { color: var(--text-dim); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-value { font-size: 1.1rem; margin-top: 8px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--warning);
+            display: inline-block;
+        }
+        .status-dot.online { background: var(--success); box-shadow: 0 0 14px rgba(34,197,94,0.7); }
+
+        .map-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .toolbar-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+        .btn {
+            border: 1px solid var(--border);
+            background: var(--bg-soft);
+            color: white;
+            padding: 10px 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn:hover { border-color: rgba(56,189,248,0.6); color: #d9f2ff; }
+        .btn.primary { background: linear-gradient(90deg, #0ea5e9, #22d3ee); color: #01131b; border-color: transparent; font-weight: 800; }
 
         .live-map {
             width: 100%;
-            min-height: 640px;
+            min-height: 680px;
             border: 1px solid var(--border);
             border-radius: 22px;
             background: #09090b;
         }
 
-        .map-caption { color: var(--text-dim); line-height: 1.7; }
+        .map-caption { color: var(--text-dim); line-height: 1.7; margin-top: 14px; }
         .map-caption a { color: white; }
+
+        .hint-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .hint {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            color: var(--text-dim);
+            line-height: 1.6;
+            font-size: 0.92rem;
+        }
+
+        .hint strong { color: white; }
 
         .mobile-hud {
             position: fixed;
@@ -89,10 +163,23 @@
         .mobile-hud.active { transform: translateY(0); }
         .mobile-hud a { font-size: 2.5rem; font-weight: 800; color: white; text-decoration: none; }
 
+        @media (max-width: 1200px) {
+            .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: -20px; }
+            .hint-grid { grid-template-columns: 1fr; }
+        }
+
         @media (max-width: 1024px) {
             .nav-links, .nav-container .btn-premium { display: none; }
             .mobile-toggle { display: flex; }
-            .live-map { min-height: 520px; }
+            .live-map { min-height: 560px; }
+        }
+
+        @media (max-width: 640px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .map-section { padding: 0 5% 80px; }
+            .map-toolbar { align-items: stretch; }
+            .toolbar-actions { width: 100%; }
+            .toolbar-actions .btn, .toolbar-actions .btn.primary { flex: 1; text-align: center; }
         }
     </style>
 </head>
@@ -128,29 +215,105 @@
 
     <section class="page-header">
         <div>
-            <h1 style="font-size: clamp(2.6rem, 8vw, 5rem); font-weight: 800; letter-spacing: -2px;">ERLC API v2 Usage Map</h1>
-            <p>This page shows the ERLC API v2 map and where users are actively calling the API. The live view below comes directly from the official ERLC API documentation website.</p>
+            <h1 style="font-size: clamp(2.3rem, 7vw, 5rem); font-weight: 800; letter-spacing: -2px;">ERLC API v2 Global Live Map</h1>
+            <p>Track where ERLC API users are active in real time. This dashboard embeds the official ERLC v2 map, gives quick status info, and adds easy controls so your staff can monitor hotspots fast.</p>
         </div>
     </section>
 
     <section class="map-section">
-        <div class="panel">
-            <img class="map-image" src="https://docs.policeroleplay.community/img/logo.png" alt="ERLC API map preview">
-            <p class="map-caption">Preview from ERLC docs. If this image does not load in your browser, open the map directly at <a href="https://apidocs.policeroleplay.community/" target="_blank" rel="noopener noreferrer">apidocs.policeroleplay.community</a>.</p>
+        <div class="stats-grid" aria-label="map status cards">
+            <div class="stat-card">
+                <div class="stat-label">Map source</div>
+                <div class="stat-value"><i class="fa-solid fa-globe"></i> ERLC Official</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Embed status</div>
+                <div class="stat-value"><span class="status-dot" id="embedStatusDot"></span><span id="embedStatusText">Checking...</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Last refresh</div>
+                <div class="stat-value" id="lastRefresh">Not refreshed yet</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Next auto refresh</div>
+                <div class="stat-value" id="nextRefresh">In 60s</div>
+            </div>
         </div>
 
         <div class="panel">
-            <iframe class="live-map" src="https://apidocs.policeroleplay.community/" title="ERLC API v2 live map" loading="lazy"></iframe>
-            <p class="map-caption" style="margin-top: 16px;">Live ERLC API v2 map (embedded). This is the quickest way for players and staff to see where the API is being used globally.</p>
+            <div class="map-toolbar">
+                <h2 style="font-size: clamp(1.2rem, 3vw, 1.8rem);">Where everyone is on the ERLC map</h2>
+                <div class="toolbar-actions">
+                    <button class="btn" id="refreshBtn" type="button"><i class="fa-solid fa-rotate-right"></i> Refresh now</button>
+                    <a class="btn primary" href="https://apidocs.policeroleplay.community/" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-up-right-from-square"></i> Open full map</a>
+                </div>
+            </div>
+
+            <iframe
+                id="erlcMap"
+                class="live-map"
+                src="https://apidocs.policeroleplay.community/"
+                title="ERLC API v2 live map"
+                loading="lazy"
+                referrerpolicy="strict-origin-when-cross-origin">
+            </iframe>
+
+            <p class="map-caption">If your browser blocks iframe content from the official docs site, use the <strong>Open full map</strong> button above to view it directly. Data and map rendering are provided by ERLC docs.</p>
+
+            <div class="hint-grid">
+                <div class="hint"><strong>Live player activity:</strong> The embedded map is the official ERLC API v2 world view showing active usage points globally.</div>
+                <div class="hint"><strong>Operations tip:</strong> Keep this page open on a second monitor and use manual refresh during event peaks.</div>
+                <div class="hint"><strong>Staff workflow:</strong> Pair map spikes with in-game moderation/dispatch updates to quickly spot unusual activity clusters.</div>
+            </div>
         </div>
     </section>
 
     <script>
+        const mapFrame = document.getElementById('erlcMap');
+        const embedStatusDot = document.getElementById('embedStatusDot');
+        const embedStatusText = document.getElementById('embedStatusText');
+        const lastRefreshEl = document.getElementById('lastRefresh');
+        const nextRefreshEl = document.getElementById('nextRefresh');
+        const refreshBtn = document.getElementById('refreshBtn');
+
+        const AUTO_REFRESH_SECONDS = 60;
+        let countdown = AUTO_REFRESH_SECONDS;
+
         function toggleMenu() {
             const menu = document.getElementById('mobileMenu');
             menu.classList.toggle('active');
             document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
         }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+
+        function markStatusOnline() {
+            embedStatusDot.classList.add('online');
+            embedStatusText.textContent = 'Live';
+        }
+
+        function refreshMap() {
+            const baseUrl = 'https://apidocs.policeroleplay.community/';
+            mapFrame.src = `${baseUrl}?t=${Date.now()}`;
+            lastRefreshEl.textContent = formatTime(new Date());
+            countdown = AUTO_REFRESH_SECONDS;
+        }
+
+        mapFrame.addEventListener('load', markStatusOnline);
+        refreshBtn.addEventListener('click', refreshMap);
+
+        setInterval(() => {
+            countdown -= 1;
+            if (countdown <= 0) {
+                refreshMap();
+            }
+            nextRefreshEl.textContent = `In ${countdown}s`;
+        }, 1000);
+
+        lastRefreshEl.textContent = formatTime(new Date());
+        nextRefreshEl.textContent = `In ${AUTO_REFRESH_SECONDS}s`;
     </script>
 </body>
 </html>
