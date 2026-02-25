@@ -236,7 +236,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-label">Next auto refresh</div>
-                <div class="stat-value" id="nextRefresh">In 60s</div>
+                <div class="stat-value" id="nextRefresh">In 30s</div>
             </div>
         </div>
 
@@ -260,6 +260,11 @@
 
             <p class="map-caption">If your browser blocks iframe content from the official docs site, use the <strong>Open full map</strong> button above to view it directly. Data and map rendering are provided by ERLC docs.</p>
 
+            <div class="hint" style="margin-top: 14px;">
+                <strong>Live server snapshot:</strong>
+                <span id="playerSnapshot">Loading current players...</span>
+            </div>
+
             <div class="hint-grid">
                 <div class="hint"><strong>Live player activity:</strong> The embedded map is the official ERLC API v2 world view showing active usage points globally.</div>
                 <div class="hint"><strong>Operations tip:</strong> Keep this page open on a second monitor and use manual refresh during event peaks.</div>
@@ -275,8 +280,9 @@
         const lastRefreshEl = document.getElementById('lastRefresh');
         const nextRefreshEl = document.getElementById('nextRefresh');
         const refreshBtn = document.getElementById('refreshBtn');
+        const playerSnapshotEl = document.getElementById('playerSnapshot');
 
-        const AUTO_REFRESH_SECONDS = 60;
+        const AUTO_REFRESH_SECONDS = 30;
         let countdown = AUTO_REFRESH_SECONDS;
 
         function toggleMenu() {
@@ -294,11 +300,31 @@
             embedStatusText.textContent = 'Live';
         }
 
+        async function fetchPlayerSnapshot() {
+            try {
+                const response = await fetch('/api/status');
+                if (!response.ok) {
+                    throw new Error('Status API request failed');
+                }
+
+                const data = await response.json();
+                const currentPlayers = data.CurrentPlayers ?? 0;
+                const maxPlayers = data.MaxPlayers ?? 40;
+                const queuePlayers = data.Queue ?? data.JoinQueue ?? 0;
+
+                playerSnapshotEl.textContent = `${currentPlayers}/${maxPlayers} in server (Queue: ${queuePlayers}). Updated ${formatTime(new Date())}.`;
+            } catch (error) {
+                playerSnapshotEl.textContent = 'Unable to load player count right now.';
+                console.error(error);
+            }
+        }
+
         function refreshMap() {
             const baseUrl = 'https://apidocs.policeroleplay.community/';
             mapFrame.src = `${baseUrl}?t=${Date.now()}`;
             lastRefreshEl.textContent = formatTime(new Date());
             countdown = AUTO_REFRESH_SECONDS;
+            fetchPlayerSnapshot();
         }
 
         mapFrame.addEventListener('load', markStatusOnline);
@@ -314,6 +340,7 @@
 
         lastRefreshEl.textContent = formatTime(new Date());
         nextRefreshEl.textContent = `In ${AUTO_REFRESH_SECONDS}s`;
+        fetchPlayerSnapshot();
     </script>
 </body>
 </html>
