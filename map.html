@@ -3,120 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERLC Live Map | Alaska State</title>
+    <title>Alaska State | Tactical Live Map</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
     <style>
         :root {
-            --bg: #050505; --bg-soft: #0d0d11; --border: rgba(255, 255, 255, 0.08);
-            --text-dim: #94a3b8; --accent: #38bdf8; --success: #22c55e;
+            --bg: #050505;
+            --bg-soft: #0d0d11;
+            --glass: rgba(15, 15, 18, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-dim: #94a3b8;
+            --accent: #38bdf8;
+            --police: #2563eb;
+            --sheriff: #d97706;
+            --ems: #dc2626;
+            --dot: #f59e0b;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg); color: white; }
+        body { background: var(--bg); color: white; overflow-x: hidden; }
 
-        /* Reuse your premium navigation style */
-        .nav-container { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 1100px; z-index: 1000; }
-        nav { background: rgba(15,15,18,0.7); backdrop-filter: blur(25px); border: 1px solid var(--border); border-radius: 100px; padding: 14px 35px; display: flex; justify-content: space-between; align-items: center; }
+        /* Premium Navigation */
+        .nav-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 1200px; z-index: 1000; }
+        nav { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 100px; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-weight: 800; letter-spacing: -0.5px; font-size: 1.1rem; }
+        .status-pill { font-size: 0.75rem; color: var(--text-dim); display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 6px 15px; border-radius: 50px; border: 1px solid var(--border); }
+        .live-dot { width: 8px; height: 8px; background: #444; border-radius: 50%; }
+        .live-dot.active { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
+
+        /* Layout */
+        .wrapper { padding: 130px 5% 50px; max-width: 1600px; margin: 0 auto; }
+        .header-area { text-align: center; margin-bottom: 40px; }
         
-        .page-header { padding: 160px 10% 60px; text-align: center; }
-        .map-section { padding: 0 10% 120px; max-width: 1400px; margin: 0 auto; }
+        /* Map Container */
+        .map-card { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 30px; padding: 20px; position: relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        #map-canvas { 
+            width: 100%; 
+            height: 70vh; 
+            border-radius: 20px; 
+            background: #08080a;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
 
-        /* The Panel and Map */
-        .panel { background: #0a0a0d; border: 1px solid var(--border); border-radius: 30px; padding: 24px; box-shadow: 0 15px 50px rgba(0,0,0,0.4); }
-        #map-canvas { width: 100%; height: 600px; border-radius: 20px; background: #000; border: 1px solid var(--border); }
+        /* Marker Styling */
+        .unit-label {
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
 
-        .stat-card { background: rgba(8, 8, 12, 0.8); border: 1px solid var(--border); border-radius: 18px; padding: 16px; margin-bottom: 20px; }
-        .unit-label { background: #000; color: #fff; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--accent); font-size: 10px; font-weight: 800; }
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-box { background: var(--bg-soft); border: 1px solid var(--border); padding: 20px; border-radius: 20px; }
+        .stat-box small { color: var(--text-dim); font-size: 0.7rem; text-transform: uppercase; font-weight: 700; }
+        .stat-box div { font-size: 1.4rem; font-weight: 800; margin-top: 5px; color: var(--accent); }
+
+        .leaflet-container { background: #050505 !important; }
     </style>
 </head>
 <body>
 
     <div class="nav-container">
         <nav>
-            <div style="font-weight: 800;">ALASKA STATE</div>
-            <div id="status" style="font-size: 0.8rem; color: var(--text-dim);"><i class="fa-solid fa-circle" style="color: grey;"></i> Connecting...</div>
+            <div class="brand">ALASKA <span style="color: var(--accent)">STATE</span></div>
+            <div class="status-pill">
+                <div id="sync-dot" class="live-dot"></div>
+                <span id="sync-text">INITIALIZING</span>
+            </div>
         </nav>
     </div>
 
-    <section class="page-header">
-        <h1 style="font-size: 3rem; font-weight: 800;">Live Asset Tracking</h1>
-        <p style="color: var(--text-dim);">Real-time GPS coordinate pinpointing for all active server units.</p>
-    </section>
+    <div class="wrapper">
+        <div class="header-area">
+            <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 10px;">Live Asset Tracking</h1>
+            <p style="color: var(--text-dim);">Real-time GPS coordinate pinpointing for all active server units.</p>
+        </div>
 
-    <section class="map-section">
-        <div class="panel">
-            <div id="map-canvas"></div>
-            <div style="margin-top: 20px; color: var(--text-dim); font-size: 0.9rem;">
-                <i class="fa-solid fa-info-circle"></i> Map updates automatically every 15 seconds. Coordinates are synced via ERLC API v2.
+        <div class="stats-grid">
+            <div class="stat-box">
+                <small>Server Population</small>
+                <div id="stat-pop">0 / 0</div>
+            </div>
+            <div class="stat-box">
+                <small>Active Units</small>
+                <div id="stat-units">0</div>
+            </div>
+            <div class="stat-box">
+                <small>Last Data Fetch</small>
+                <div id="stat-time">--:--:--</div>
             </div>
         </div>
-    </section>
+
+        <div class="map-card">
+            <div id="map-canvas"></div>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Set up the map engine
-        const map = L.map('map-canvas', { crs: L.CRS.Simple, minZoom: -3 });
-        map.setView([0, 0], -2);
+        // 1. Initialize Map (Using Simple CRS for XY Coordinates)
+        const map = L.map('map-canvas', {
+            crs: L.CRS.Simple,
+            minZoom: -4,
+            maxZoom: 2,
+            zoomControl: true
+        });
+
+        // Focus the map on the general area where players usually are
+        map.setView([400, 200], -1);
 
         let markers = {};
 
-        function getMarkerColor(team) {
+        // 2. Color logic based on Team
+        function getTeamColor(team) {
             if (team.includes("Police")) return "#2563eb";
             if (team.includes("Sheriff")) return "#d97706";
             if (team.includes("Fire") || team.includes("EMS")) return "#dc2626";
-            return "#ffffff";
+            if (team.includes("DOT")) return "#f59e0b";
+            return "#ffffff"; // Civilian
         }
 
-        async function updateMap() {
+        // 3. Main Data Sync
+        async function syncData() {
+            const syncDot = document.getElementById('sync-dot');
+            const syncText = document.getElementById('sync-text');
+
             try {
-                // Fetch from your NEW backend file
-                const response = await fetch('/api/map-data');
+                // Fetch from your Vercel /api/erlc-map-api route
+                const response = await fetch('/api/erlc-map-api');
                 const data = await response.json();
 
-                if (!data.Players) return;
+                if (!data.Players) throw new Error("No data");
 
-                document.getElementById('status').innerHTML = `<i class="fa-solid fa-circle" style="color: #22c55e;"></i> LIVE: ${data.CurrentPlayers} Online`;
+                // Update Stats
+                document.getElementById('stat-pop').innerText = `${data.CurrentPlayers} / ${data.MaxPlayers}`;
+                document.getElementById('stat-units').innerText = data.Players.length;
+                document.getElementById('stat-time').innerText = new Date().toLocaleTimeString();
+                
+                syncText.innerText = "LIVE CONNECTION";
+                syncDot.classList.add('active');
 
-                const currentActive = [];
+                const currentNames = [];
 
                 data.Players.forEach(p => {
-                    const name = p.Player.split(':')[0];
-                    currentActive.push(name);
-                    
-                    // ER:LC v2 Coordinates (Y-Axis is Z in Roblox)
-                    const pos = [p.Location.LocationZ / 5, p.Location.LocationX / 5];
+                    const cleanName = p.Player.split(':')[0];
+                    currentNames.push(cleanName);
 
-                    if (markers[name]) {
-                        markers[name].setLatLng(pos);
+                    // Map Roblox Z/X to Leaflet Y/X
+                    // We divide by 5 to bring the coordinates into a viewable web scale
+                    const y = p.Location.LocationZ / 5;
+                    const x = p.Location.LocationX / 5;
+                    
+                    const color = getTeamColor(p.Team);
+                    const label = p.Callsign ? `${cleanName} [${p.Callsign}]` : cleanName;
+
+                    if (markers[cleanName]) {
+                        // Update existing marker position
+                        markers[cleanName].setLatLng([y, x]);
                     } else {
-                        markers[name] = L.circleMarker(pos, {
+                        // Create new marker
+                        markers[cleanName] = L.circleMarker([y, x], {
                             radius: 7,
-                            color: getMarkerColor(p.Team),
+                            color: color,
                             fillOpacity: 1,
                             weight: 2
-                        }).addTo(map).bindTooltip(name, { permanent: true, direction: 'top', className: 'unit-label' });
+                        }).addTo(map).bindTooltip(label, {
+                            permanent: true,
+                            direction: 'top',
+                            className: 'unit-label'
+                        });
                     }
                 });
 
-                // Clear players who left
-                Object.keys(markers).forEach(m => {
-                    if (!currentActive.includes(m)) {
-                        map.removeLayer(markers[m]);
-                        delete markers[m];
+                // Remove players who left the server
+                Object.keys(markers).forEach(name => {
+                    if (!currentNames.includes(name)) {
+                        map.removeLayer(markers[name]);
+                        delete markers[name];
                     }
                 });
 
             } catch (err) {
-                document.getElementById('status').innerHTML = `<i class="fa-solid fa-circle" style="color: #ef4444;"></i> API ERROR`;
+                syncText.innerText = "API ERROR";
+                syncDot.classList.remove('active');
+                console.error("Sync error:", err);
             }
         }
 
-        setInterval(updateMap, 15000);
-        updateMap();
+        // Run sync every 10 seconds
+        setInterval(syncData, 10000);
+        syncData(); // Initial run
     </script>
 </body>
 </html>
