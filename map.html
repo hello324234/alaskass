@@ -82,8 +82,7 @@
             maxZoom: 1,
         });
 
-        // The image dimensions are 2000x2000 for this map
-        const bounds = [[0, 0], [1000, 1000]];
+        const bounds = [[0, 0], [3120, 3120]];
         
         const mapImage = L.imageOverlay('https://alpha.duckybot.xyz/assets/erlc-map.png', bounds).addTo(map);
 
@@ -117,11 +116,8 @@
                     const cleanName = p.Player.split(':')[0];
                     currentNames.push(cleanName);
 
-                    // Refined Coordinate Mapping:
-                    // This math centers the dots based on the standard PRW map image.
-                    // Roblox 0,0 is usually the middle of the map.
-                    const y = (p.Location.LocationZ / -6) + 480; 
-                    const x = (p.Location.LocationX / 6) + 520;
+                    const y = 3120 - p.Location.LocationZ;
+                    const x = p.Location.LocationX;
                     
                     const color = getTeamColor(p.Team);
                     const label = p.Callsign ? `${cleanName} [${p.Callsign}]` : cleanName;
