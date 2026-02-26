@@ -29,9 +29,9 @@
         .header-area { text-align: center; margin-bottom: 40px; }
         
         .map-card { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 30px; padding: 20px; position: relative; }
-        #map-canvas { width: 100%; height: 70vh; border-radius: 20px; background: #08080a; border: 1px solid rgba(255,255,255,0.03); }
+        #map-canvas { width: 100%; height: 75vh; border-radius: 20px; background: #08080a; border: 1px solid rgba(255,255,255,0.03); }
 
-        .unit-label { background: rgba(0, 0, 0, 0.85); border: 1px solid var(--border); color: white; padding: 1px 6px; border-radius: 4px; font-size: 9px; font-weight: 700; }
+        .unit-label { background: rgba(0, 0, 0, 0.9); border: 1px solid var(--accent); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .stat-box { background: var(--bg-soft); border: 1px solid var(--border); padding: 20px; border-radius: 20px; }
@@ -57,7 +57,7 @@
         <div class="stats-grid">
             <div class="stat-box">
                 <small>Server Population</small>
-                <div id="stat-pop">0 / 0</div>
+                <div id="stat-pop">0 / 40</div>
             </div>
             <div class="stat-box">
                 <small>Active Players</small> 
@@ -78,16 +78,15 @@
     <script>
         const map = L.map('map-canvas', {
             crs: L.CRS.Simple,
-            minZoom: -3,
+            minZoom: -2,
             maxZoom: 1,
         });
 
-        // Map Bounds - Adjusting to fit the image dimensions
+        // The image dimensions are 2000x2000 for this map
         const bounds = [[0, 0], [1000, 1000]];
         
-        // ADDING THE ACTUAL MAP IMAGE
-        // Replace this URL if you have a custom Alaska/Liberty County map image
-        const mapImage = L.imageOverlay('https://i.imgur.com/uY7vMOf.png', bounds).addTo(map);
+        // Using a more reliable map source for Liberty County
+        const mapImage = L.imageOverlay('https://policeroleplay.community/static/media/map.01d9f8e5.png', bounds).addTo(map);
 
         map.fitBounds(bounds);
 
@@ -119,11 +118,11 @@
                     const cleanName = p.Player.split(':')[0];
                     currentNames.push(cleanName);
 
-                    // Coordinate Translation:
-                    // Roblox X/Z needs to be mapped to the 0-1000 image scale
-                    // These multipliers may need slight adjustment depending on the map image used
-                    const y = (p.Location.LocationZ / 8) + 500;
-                    const x = (p.Location.LocationX / 8) + 500;
+                    // Refined Coordinate Mapping:
+                    // This math centers the dots based on the standard PRW map image.
+                    // Roblox 0,0 is usually the middle of the map.
+                    const y = (p.Location.LocationZ / -6) + 480; 
+                    const x = (p.Location.LocationX / 6) + 520;
                     
                     const color = getTeamColor(p.Team);
                     const label = p.Callsign ? `${cleanName} [${p.Callsign}]` : cleanName;
@@ -136,7 +135,11 @@
                             color: color,
                             fillOpacity: 1,
                             weight: 2
-                        }).addTo(map).bindTooltip(label, { permanent: true, direction: 'top', className: 'unit-label' });
+                        }).addTo(map).bindTooltip(label, { 
+                            permanent: true, 
+                            direction: 'top', 
+                            className: 'unit-label' 
+                        });
                     }
                 });
 
