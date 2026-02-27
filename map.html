@@ -40,7 +40,7 @@
             border-radius: 12px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; margin-bottom: 5px;
         }
         .player-item:hover { background: rgba(255,255,255,0.03); border-color: var(--border); }
-        .player-item img { width: 35px; height: 35px; border-radius: 50%; background: #000; }
+        .player-item img { width: 35px; height: 35px; border-radius: 50%; background: #1a1a20; object-fit: cover; }
         .player-info { flex: 1; overflow: hidden; }
         .player-info .name { font-weight: 700; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .player-info .team { font-size: 0.7rem; color: var(--text-dim); }
@@ -50,7 +50,7 @@
         #map-canvas { width: 100%; height: 100%; background: #08080a; }
 
         /* Leaflet Overrides */
-        .unit-label { background: rgba(0, 0, 0, 0.9); border: 1px solid var(--accent); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; }
+        .unit-label { background: rgba(0, 0, 0, 0.9); border: 1px solid var(--accent); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; pointer-events: none; }
         .leaflet-popup-content-wrapper { background: #0d0d11 !important; color: white !important; border: 1px solid var(--accent); border-radius: 15px !important; padding: 5px; }
         .leaflet-popup-tip { background: #0d0d11 !important; }
 
@@ -77,8 +77,7 @@
             <div class="sidebar-header">
                 <h2>ACTIVE UNITS</h2>
             </div>
-            <div id="player-list-container" class="player-list">
-                </div>
+            <div id="player-list-container" class="player-list"></div>
         </div>
 
         <div class="map-wrapper">
@@ -95,12 +94,12 @@
             zoomSnap: 0.5
         });
 
-        // Your Fixed Bounds
         const bounds = [[0, 0], [3120, 3120]];
         L.imageOverlay('https://alpha.duckybot.xyz/assets/erlc-map.png', bounds).addTo(map);
         map.fitBounds(bounds);
 
         let markers = {};
+        const fallbackAvatar = "https://tr.rbxcdn.com/38c6ed8c6330335bc0a2a057b5a87e00/150/150/AvatarHeadshot/Png";
 
         function getTeamColor(team) {
             if (team.includes("Police")) return "#2563eb";
@@ -122,7 +121,6 @@
                 const response = await fetch('/api/erlc-map-api');
                 const data = await response.json();
 
-                // Update Navbar Stats
                 document.getElementById('stat-pop').innerText = `${data.CurrentPlayers} / ${data.MaxPlayers} Players`;
                 document.getElementById('stat-time').innerText = new Date().toLocaleTimeString();
                 document.getElementById('sync-text').innerText = "LIVE CONNECTION";
@@ -138,18 +136,18 @@
                     const userId = parts[1];
                     currentNames.push(name);
 
-                    // Your Fixed Coordinate Math
                     const y = 3120 - p.Location.LocationZ;
                     const x = p.Location.LocationX;
                     
                     const color = getTeamColor(p.Team);
                     const label = p.Callsign ? `${name} [${p.Callsign}]` : name;
-                    const avatarUrl = `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150&format=png`;
+                    
+                    // Fixed Avatar URL using the Thumbnail API format
+                    const avatarUrl = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=true`;
 
-                    // Info Popup HTML
                     const popupHTML = `
                         <div style="text-align: center; padding: 10px; min-width: 160px;">
-                            <img src="${avatarUrl}" style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid ${color}; margin-bottom: 8px;">
+                            <img src="${avatarUrl}" onerror="this.src='${fallbackAvatar}'" style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid ${color}; margin-bottom: 8px;">
                             <div style="font-weight: 800; font-size: 14px;">${name}</div>
                             <div style="font-size: 10px; color: #94a3b8; margin-bottom: 8px;">UID: ${userId}</div>
                             <div style="text-align: left; font-size: 11px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px;">
@@ -160,7 +158,6 @@
                         </div>
                     `;
 
-                    // Update or Create Marker
                     if (markers[name]) {
                         markers[name].setLatLng([y, x]);
                         markers[name].setPopupContent(popupHTML);
@@ -172,10 +169,9 @@
                           .bindPopup(popupHTML);
                     }
 
-                    // Append to Sidebar HTML string
                     listHTML += `
                         <div class="player-item" onclick="focusPlayer(${y}, ${x}, '${name}')">
-                            <img src="${avatarUrl}" alt="${name}">
+                            <img src="${avatarUrl}" onerror="this.src='${fallbackAvatar}'" alt="${name}">
                             <div class="player-info">
                                 <div class="name">${label}</div>
                                 <div class="team" style="color: ${color}">${p.Team}</div>
@@ -187,7 +183,6 @@
 
                 listContainer.innerHTML = listHTML;
 
-                // Cleanup disconnected players
                 Object.keys(markers).forEach(name => {
                     if (!currentNames.includes(name)) {
                         map.removeLayer(markers[name]);
