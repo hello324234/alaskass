@@ -118,9 +118,29 @@
 
         async function syncData() {
             try {
+                // 1. Fetch ERLC Map Data
                 const response = await fetch('/api/erlc-map-api');
                 const data = await response.json();
 
+                // 2. Extract User IDs to fetch avatars in bulk
+                const playerMap = data.Players.map(p => {
+                    const parts = p.Player.split(':');
+                    return { ...p, cleanName: parts[0], userId: parts[1] };
+                });
+
+                const userIds = playerMap.map(p => p.userId).join(',');
+                
+                // 3. Fetch Avatars from Roblox API
+                let avatarData = {};
+                if (userIds) {
+                    const avatarRes = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userIds}&size=150x150&format=Png&isCircular=true`);
+                    const avatarJson = await avatarRes.json();
+                    avatarJson.data.forEach(item => {
+                        avatarData[item.targetId] = item.imageUrl;
+                    });
+                }
+
+                // UI Updates
                 document.getElementById('stat-pop').innerText = `${data.CurrentPlayers} / ${data.MaxPlayers} Players`;
                 document.getElementById('stat-time').innerText = new Date().toLocaleTimeString();
                 document.getElementById('sync-text').innerText = "LIVE CONNECTION";
@@ -130,24 +150,20 @@
                 const listContainer = document.getElementById('player-list-container');
                 let listHTML = '';
 
-                data.Players.forEach(p => {
-                    const parts = p.Player.split(':');
-                    const name = parts[0];
-                    const userId = parts[1];
+                playerMap.forEach(p => {
+                    const name = p.cleanName;
+                    const userId = p.userId;
+                    const avatarUrl = avatarData[userId] || fallbackAvatar;
                     currentNames.push(name);
 
                     const y = 3120 - p.Location.LocationZ;
                     const x = p.Location.LocationX;
-                    
                     const color = getTeamColor(p.Team);
                     const label = p.Callsign ? `${name} [${p.Callsign}]` : name;
-                    
-                    // Avatar URL using Roblox headshot endpoint
-                    const avatarUrl = `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150`;
 
                     const popupHTML = `
                         <div style="text-align: center; padding: 10px; min-width: 160px;">
-                            <img src="${avatarUrl}" onerror="this.src='${fallbackAvatar}'" style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid ${color}; margin-bottom: 8px;">
+                            <img src="${avatarUrl}" style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid ${color}; margin-bottom: 8px;">
                             <div style="font-weight: 800; font-size: 14px;">${name}</div>
                             <div style="font-size: 10px; color: #94a3b8; margin-bottom: 8px;">UID: ${userId}</div>
                             <div style="text-align: left; font-size: 11px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px;">
@@ -171,7 +187,7 @@
 
                     listHTML += `
                         <div class="player-item" onclick="focusPlayer(${y}, ${x}, '${name}')">
-                            <img src="${avatarUrl}" onerror="this.src='${fallbackAvatar}'" alt="${name}">
+                            <img src="${avatarUrl}" alt="${name}">
                             <div class="player-info">
                                 <div class="name">${label}</div>
                                 <div class="team" style="color: ${color}">${p.Team}</div>
@@ -191,6 +207,7 @@
                 });
 
             } catch (err) {
+                console.error(err);
                 document.getElementById('sync-text').innerText = "API ERROR";
                 document.getElementById('sync-dot').classList.remove('active');
             }
