@@ -3,50 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alaska State | Tactical Live Map</title>
+    <title>Alaska State | Tactical Live Map</title> [cite: 1, 2]
 
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet"> [cite: 2]
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> [cite: 2]
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" /> [cite: 2]
 
     <style>
         :root {
-            --bg: #050505; --bg-soft: #0d0d11; --border: rgba(255, 255, 255, 0.08);
-            --text-dim: #94a3b8; --accent: #38bdf8; --glass: rgba(15, 15, 18, 0.7);
+            --bg: #050505; --bg-soft: #0d0d11; --border: rgba(255, 255, 255, 0.08); [cite: 3]
+            --text-dim: #94a3b8; --accent: #38bdf8; --glass: rgba(15, 15, 18, 0.7); [cite: 3]
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: var(--bg); color: white; overflow: hidden; height: 100vh; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; } [cite: 4, 5]
+        body { background: var(--bg); color: white; overflow: hidden; height: 100vh; } [cite: 5, 6]
 
-        .nav-container { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); width: 95%; z-index: 1000; }
-        nav { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 100px; padding: 10px 25px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-container { position: fixed; top: 15px; left: 50%; transform: translateX(-50%); width: 95%; z-index: 1000; } [cite: 7]
+        nav { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 100px; padding: 10px 25px; display: flex; justify-content: space-between; align-items: center; } [cite: 8, 9]
         
-        .status-pill { font-size: 0.7rem; color: var(--text-dim); display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 5px 12px; border-radius: 50px; border: 1px solid var(--border); }
-        .live-dot { width: 7px; height: 7px; background: #444; border-radius: 50%; }
-        .live-dot.active { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
+        .status-pill { font-size: 0.7rem; color: var(--text-dim); display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 5px 12px; border-radius: 50px; border: 1px solid var(--border); } [cite: 9, 10]
+        .live-dot { width: 7px; height: 7px; background: #444; border-radius: 50%; } [cite: 11]
+        .live-dot.active { background: #22c55e; box-shadow: 0 0 10px #22c55e; } [cite: 12]
 
-        .main-container { display: flex; height: 100vh; padding-top: 85px; gap: 15px; padding-left: 15px; padding-right: 15px; padding-bottom: 15px; }
-        .sidebar { width: 320px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; }
-        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); }
-        .sidebar-header h2 { font-size: 1rem; font-weight: 800; color: var(--accent); }
+        .main-container { display: flex; height: 100vh; padding-top: 85px; gap: 15px; padding-left: 15px; padding-right: 15px; padding-bottom: 15px; } [cite: 13, 14]
+        .sidebar { width: 320px; background: var(--bg-soft); border: 1px solid var(--border); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; } [cite: 15, 16]
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); } [cite: 17]
+        .sidebar-header h2 { font-size: 1rem; font-weight: 800; color: var(--accent); } [cite: 18]
         
-        .player-list { flex: 1; overflow-y: auto; padding: 10px; }
-        .player-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; margin-bottom: 5px; }
-        .player-item:hover { background: rgba(255,255,255,0.03); border-color: var(--border); }
-        .player-item img { width: 35px; height: 35px; border-radius: 50%; background: #1a1a20; object-fit: cover; }
-        .player-info { flex: 1; overflow: hidden; }
-        .player-info .name { font-weight: 700; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .player-info .team { font-size: 0.7rem; color: var(--text-dim); }
+        .player-list { flex: 1; overflow-y: auto; padding: 10px; } [cite: 19, 20]
+        .player-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; cursor: pointer; transition: 0.2s; border: 1px solid transparent; margin-bottom: 5px; } [cite: 20, 21]
+        .player-item:hover { background: rgba(255,255,255,0.03); border-color: var(--border); } [cite: 22]
+        .player-item img { width: 35px; height: 35px; border-radius: 50%; background: #1a1a20; object-fit: cover; } [cite: 23, 24]
+        .player-info { flex: 1; overflow: hidden; } [cite: 24]
+        .player-info .name { font-weight: 700; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } [cite: 25, 26]
+        .player-info .team { font-size: 0.7rem; color: var(--text-dim); } [cite: 26]
 
-        .map-wrapper { flex: 1; position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--border); }
-        #map-canvas { width: 100%; height: 100%; background: #08080a; }
+        .map-wrapper { flex: 1; position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--border); } [cite: 27, 28]
+        #map-canvas { width: 100%; height: 100%; background: #08080a; } [cite: 29]
 
-        .unit-label { background: rgba(0, 0, 0, 0.9); border: 1px solid var(--accent); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; pointer-events: none; }
-        .leaflet-popup-content-wrapper { background: #0d0d11 !important; color: white !important; border: 1px solid var(--accent); border-radius: 15px !important; padding: 5px; }
-        .leaflet-popup-tip { background: #0d0d11 !important; }
+        .unit-label { background: rgba(0, 0, 0, 0.9); border: 1px solid var(--accent); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; pointer-events: none; } [cite: 30, 31]
+        .leaflet-popup-content-wrapper { background: #0d0d11 !important; color: white !important; border: 1px solid var(--accent); border-radius: 15px !important; padding: 5px; } [cite: 32, 33]
+        .leaflet-popup-tip { background: #0d0d11 !important; } [cite: 33, 34]
 
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        ::-webkit-scrollbar { width: 5px; } [cite: 34, 35]
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; } [cite: 35, 36]
     </style>
 </head>
 <body>
@@ -75,138 +75,127 @@
         </div>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script> [cite: 38]
     <script>
         const map = L.map('map-canvas', {
             crs: L.CRS.Simple,
             minZoom: -2,
-            maxZoom: 1,
+            maxZoom: 1, [cite: 38, 39]
             zoomSnap: 0.5
         });
-        const bounds = [[0, 0], [3120, 3120]];
-        L.imageOverlay('https://alpha.duckybot.xyz/assets/erlc-map.png', bounds).addTo(map);
-        map.fitBounds(bounds);
+        const bounds = [[0, 0], [3120, 3120]]; [cite: 40]
+        L.imageOverlay('https://alpha.duckybot.xyz/assets/erlc-map.png', bounds).addTo(map); [cite: 40]
+        map.fitBounds(bounds); [cite: 40]
 
         let markers = {};
-        const fallbackAvatar = "https://tr.rbxcdn.com/38c6ed8c6330335bc0a2a057b5a87e00/150/150/AvatarHeadshot/Png";
+        const fallbackAvatar = "https://tr.rbxcdn.com/38c6ed8c6330335bc0a2a057b5a87e00/150/150/AvatarHeadshot/Png"; [cite: 40]
 
         function getTeamColor(team) {
-            if (team.includes("Police")) return "#2563eb";
-            if (team.includes("Sheriff")) return "#d97706";
-            if (team.includes("Fire") || team.includes("EMS")) return "#dc2626";
-            if (team.includes("DOT")) return "#f59e0b";
-            return "#ffffff";
+            if (team.includes("Police")) return "#2563eb"; [cite: 41]
+            if (team.includes("Sheriff")) return "#d97706"; [cite: 42]
+            if (team.includes("Fire") || team.includes("EMS")) return "#dc2626"; [cite: 42]
+            if (team.includes("DOT")) return "#f59e0b"; [cite: 42]
+            return "#ffffff"; [cite: 42]
         }
 
         function focusPlayer(y, x, name) {
-            map.flyTo([y, x], 0, { duration: 1.5 });
+            map.flyTo([y, x], 0, { duration: 1.5 }); [cite: 43]
             setTimeout(() => {
-                if (markers[name]) markers[name].openPopup();
-            }, 1600);
+                if (markers[name]) markers[name].openPopup(); [cite: 44]
+            }, 1600); [cite: 44]
         }
 
         async function syncData() {
             try {
-                const response = await fetch('/api/erlc-map-api');
-                const data = await response.json();
+                const response = await fetch('/api/erlc-map-api'); [cite: 45]
+                const data = await response.json(); [cite: 46]
 
-                document.getElementById('stat-pop').innerText = `${data.CurrentPlayers} / ${data.MaxPlayers} Players`;
-                document.getElementById('stat-time').innerText = new Date().toLocaleTimeString();
-                document.getElementById('sync-text').innerText = "LIVE CONNECTION";
-                document.getElementById('sync-dot').classList.add('active');
-
-                // --- NEW THUMBNAIL LOGIC ---
-                // Collect all User IDs from the current players list
-                const ids = data.Players.map(p => p.Player.split(':')[1]).filter(id => id);
-                let avatarMap = {};
-
-                if (ids.length > 0) {
-                    try {
-                        // Fetch all avatar headshots in one batch request
-                        const thumbRes = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${ids.join(',')}&size=150x150&format=Png&isCircular=false`);
-                        const thumbJson = await thumbRes.json();
-                        
-                        // Map the results for quick lookup: { userId: imageUrl }
-                        thumbJson.data.forEach(item => {
-                            avatarMap[item.targetId] = item.imageUrl;
-                        });
-                    } catch (e) {
-                        console.error("Thumbnail API failed", e);
-                    }
-                }
-                // --- END NEW LOGIC ---
+                document.getElementById('stat-pop').innerText = `${data.CurrentPlayers} / ${data.MaxPlayers} Players`; [cite: 46]
+                document.getElementById('stat-time').innerText = new Date().toLocaleTimeString(); [cite: 46]
+                document.getElementById('sync-text').innerText = "LIVE CONNECTION"; [cite: 46]
+                document.getElementById('sync-dot').classList.add('active'); [cite: 46]
 
                 const currentNames = [];
-                const listContainer = document.getElementById('player-list-container');
+                const listContainer = document.getElementById('player-list-container'); [cite: 47]
                 let listHTML = '';
 
-                data.Players.forEach(p => {
-                    const parts = p.Player.split(':');
-                    const name = parts[0];
-                    const userId = parts[1];
-                    currentNames.push(name);
+                // Step 1: Collect all UserIDs to fetch avatars in one go
+                const userIds = data.Players.map(p => p.Player.split(':')[1]).join(',');
+                const thumbRes = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userIds}&size=150x150&format=Png`);
+                const thumbData = await thumbRes.json();
+                
+                // Create a lookup map for easy access
+                const avatarMap = {};
+                thumbData.data.forEach(item => {
+                    avatarMap[item.targetId] = item.imageUrl;
+                });
 
-                    const y = 3120 - p.Location.LocationZ;
-                    const x = p.Location.LocationX;
-                    const color = getTeamColor(p.Team);
-                    const label = p.Callsign ? `${name} [${p.Callsign}]` : name;
+                data.Players.forEach(p => { [cite: 48]
+                    const parts = p.Player.split(':'); [cite: 48]
+                    const name = parts[0]; [cite: 48]
+                    const userId = parts[1]; [cite: 48]
+                    currentNames.push(name); [cite: 48]
+
+                    const y = 3120 - p.Location.LocationZ; [cite: 49]
+                    const x = p.Location.LocationX; [cite: 49]
+                    const color = getTeamColor(p.Team); [cite: 49]
+                    const label = p.Callsign ? `${name} [${p.Callsign}]` : name; [cite: 50]
                     
-                    // Assign the fetched avatar URL or fallback if not found
+                    // Use the fetched URL from the lookup map
                     const avatarUrl = avatarMap[userId] || fallbackAvatar;
 
                     const popupHTML = `
                         <div style="text-align: center; padding: 10px; min-width: 160px;">
-                            <img src="${avatarUrl}" onerror="this.src='${fallbackAvatar}'" style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid ${color}; margin-bottom: 8px;">
-                            <div style="font-weight: 800; font-size: 14px;">${name}</div>
-                            <div style="font-size: 10px; color: #94a3b8; margin-bottom: 8px;">UID: ${userId}</div>
-                            <div style="text-align: left; font-size: 11px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px;">
-                                <p><b>Team:</b> <span style="color: ${color}">${p.Team}</span></p>
-                                <p><b>Location:</b> ${p.Location.StreetName || 'Patrolling'}</p>
-                                <p><b>Postal:</b> ${p.Location.PostalCode || 'N/A'}</p>
+                            <img src="${avatarUrl}" onerror="this.src='${fallbackAvatar}'" style="width: 70px; height: 70px; border-radius: 50%; border: 2px solid ${color}; margin-bottom: 8px;"> [cite: 51, 52]
+                            <div style="font-weight: 800; font-size: 14px;">${name}</div> [cite: 52, 53]
+                            <div style="font-size: 10px; color: #94a3b8; margin-bottom: 8px;">UID: ${userId}</div> [cite: 53, 54]
+                            <div style="text-align: left; font-size: 11px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px;"> [cite: 54, 55]
+                                <p><b>Team:</b> <span style="color: ${color}">${p.Team}</span></p> [cite: 55]
+                                <p><b>Location:</b> ${p.Location.StreetName || 'Patrolling'}</p> [cite: 55]
+                                <p><b>Postal:</b> ${p.Location.PostalCode || 'N/A'}</p> [cite: 56]
                             </div>
                         </div>
                     `;
 
-                    if (markers[name]) {
-                        markers[name].setLatLng([y, x]);
-                        markers[name].setPopupContent(popupHTML);
+                    if (markers[name]) { [cite: 57]
+                        markers[name].setLatLng([y, x]); [cite: 57]
+                        markers[name].setPopupContent(popupHTML); [cite: 57]
                     } else {
-                        markers[name] = L.circleMarker([y, x], {
+                        markers[name] = L.circleMarker([y, x], { [cite: 58]
                             radius: 6, color: color, fillOpacity: 1, weight: 2
                         }).addTo(map)
-                          .bindTooltip(label, { permanent: true, direction: 'top', className: 'unit-label' })
-                          .bindPopup(popupHTML);
+                          .bindTooltip(label, { permanent: true, direction: 'top', className: 'unit-label' }) [cite: 58]
+                          .bindPopup(popupHTML); [cite: 59]
                     }
 
                     listHTML += `
-                        <div class="player-item" onclick="focusPlayer(${y}, ${x}, '${name}')">
-                            <img src="${avatarUrl}" onerror="this.src='${fallbackAvatar}'" alt="${name}">
+                        <div class="player-item" onclick="focusPlayer(${y}, ${x}, '${name}')"> [cite: 59, 60]
+                            <img src="${avatarUrl}" onerror="this.src='${fallbackAvatar}'" alt="${name}"> [cite: 60]
                             <div class="player-info">
-                                <div class="name">${label}</div>
-                                <div class="team" style="color: ${color}">${p.Team}</div>
+                                <div class="name">${label}</div> [cite: 60, 61]
+                                <div class="team" style="color: ${color}">${p.Team}</div> [cite: 61]
                             </div>
-                            ${p.WantedStars > 0 ? '<i class="fas fa-star" style="color: #f59e0b; font-size: 0.7rem;"></i>' : ''}
+                            ${p.WantedStars > 0 ? '<i class="fas fa-star" style="color: #f59e0b; font-size: 0.7rem;"></i>' : ''} [cite: 62]
                         </div>
                     `;
-                });
+                }); [cite: 63]
 
-                listContainer.innerHTML = listHTML;
+                listContainer.innerHTML = listHTML; [cite: 63]
 
-                Object.keys(markers).forEach(name => {
-                    if (!currentNames.includes(name)) {
-                        map.removeLayer(markers[name]);
-                        delete markers[name];
+                Object.keys(markers).forEach(name => { [cite: 63]
+                    if (!currentNames.includes(name)) { [cite: 63]
+                        map.removeLayer(markers[name]); [cite: 63]
+                        delete markers[name]; [cite: 63]
                     }
                 });
-
-            } catch (err) {
-                document.getElementById('sync-text').innerText = "API ERROR";
-                document.getElementById('sync-dot').classList.remove('active');
+            } catch (err) { [cite: 65]
+                document.getElementById('sync-text').innerText = "API ERROR"; [cite: 65]
+                document.getElementById('sync-dot').classList.remove('active'); [cite: 66]
             }
         }
 
-        setInterval(syncData, 10000);
-        syncData();
+        setInterval(syncData, 10000); [cite: 67]
+        syncData(); [cite: 67]
     </script>
 </body>
 </html>
