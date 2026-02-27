@@ -54,11 +54,14 @@
         .leaflet-container a.leaflet-popup-close-button { color: var(--text-dim); top: 10px; right: 10px; }
         .leaflet-container a.leaflet-popup-close-button:hover { color: white; }
 
-        .profile-popup { display: flex; gap: 15px; align-items: center; min-width: 220px; padding: 5px; }
+        .profile-popup { display: flex; gap: 15px; align-items: center; min-width: 230px; padding: 5px; }
+        /* Forces the image to be a circle/square headshot depending on border-radius */
         .profile-popup img { width: 65px; height: 65px; border-radius: 12px; border: 2px solid var(--accent); object-fit: cover; background: #222; }
         .profile-popup .info h3 { margin: 0 0 4px 0; font-size: 1.1rem; font-weight: 800; }
         .profile-popup .info p { margin: 2px 0; font-size: 0.8rem; color: var(--text-dim); }
-        .profile-popup .info span.badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; color: white; margin-top: 4px; }
+        
+        .badge-container { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; color: white; text-transform: uppercase; letter-spacing: 0.5px;}
     </style>
 </head>
 <body>
@@ -100,7 +103,7 @@
                 <option value="fd">🚑 Fire & EMS</option>
                 <option value="dot">🚧 DOT</option>
                 <option value="civ">🧑 Civilians</option>
-                <option value="staff">🛡️ Staff</option>
+                <option value="staff">🛡️ Server Staff</option>
             </select>
         </div>
 
@@ -118,13 +121,12 @@
         map.fitBounds(bounds);
 
         let markers = {};
-        let latestData = { Players: [] }; // Store data globally to allow instant searching
+        let latestData = { Players: [] };
         
         // Filter States
         let currentSearch = "";
         let currentFilter = "all";
 
-        // Listeners for instant filtering
         document.getElementById('search-input').addEventListener('input', (e) => {
             currentSearch = e.target.value.toLowerCase();
             renderMap();
@@ -135,14 +137,12 @@
             renderMap();
         });
 
-        // Utilities
         function getTeamColor(team) {
             team = team.toLowerCase();
             if (team.includes("police")) return "#2563eb";
             if (team.includes("sheriff")) return "#d97706";
             if (team.includes("fire") || team.includes("ems")) return "#dc2626";
             if (team.includes("dot")) return "#f59e0b";
-            if (team.includes("staff")) return "#9333ea";
             return "#ffffff"; // Civilians / Unknown
         }
 
@@ -150,6 +150,7 @@
             const team = (player.Team || "").toLowerCase();
             const cleanName = player.Player.split(':')[0].toLowerCase();
             const callsign = (player.Callsign || "").toLowerCase();
+            const permission = (player.Permission || "Normal").toLowerCase();
 
             // Check Search
             if (currentSearch && !cleanName.includes(currentSearch) && !callsign.includes(currentSearch)) {
@@ -162,13 +163,18 @@
             if (currentFilter === "sheriff" && team.includes("sheriff")) return true;
             if (currentFilter === "fd" && (team.includes("fire") || team.includes("ems"))) return true;
             if (currentFilter === "dot" && team.includes("dot")) return true;
-            if (currentFilter === "staff" && team.includes("staff")) return true;
             if (currentFilter === "civ" && (team.includes("civilian") || team === "")) return true;
+            
+            // STAFF FILTER: Checks ERLC Server Permissions for Mods, Admins, and Owners
+            if (currentFilter === "staff" && (
+                permission.includes("mod") || 
+                permission.includes("admin") || 
+                permission.includes("owner")
+            )) return true;
 
             return false;
         }
 
-        // Render Map Logic (Runs on Sync AND on Search/Filter)
         function renderMap() {
             const currentNames = [];
             let unitsDisplayed = 0;
@@ -176,10 +182,10 @@
             latestData.Players.forEach(p => {
                 if (!checkFilterMatch(p)) return;
 
-                // ERLC API Usually returns Player format as "Username:UserId"
                 const nameParts = p.Player.split(':');
                 const cleanName = nameParts[0];
                 const userId = nameParts[1] || "Unknown"; 
+                const permission = p.Permission || "Normal";
                 
                 currentNames.push(cleanName);
                 unitsDisplayed++;
@@ -189,33 +195,38 @@
                 const color = getTeamColor(p.Team);
                 const label = p.Callsign ? `${cleanName} [${p.Callsign}]` : cleanName;
 
-                // Roblox Headshot API endpoint (Fallback to a blank user image if ID fails)
+                // Roblox strictly formats this specific URL to return the 150x150 Face Headshot
                 const avatarUrl = userId !== "Unknown" 
                     ? `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150&format=png`
                     : `https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png`;
 
-                // Build HTML for Popup
+                // Generate Staff Badge HTML if they have permissions
+                let staffBadgeHTML = "";
+                if (permission !== "Normal") {
+                    staffBadgeHTML = `<span class="badge" style="background: #9333ea; border: 1px solid #c084fc;">${permission}</span>`;
+                }
+
                 const popupHTML = `
                     <div class="profile-popup">
                         <img src="${avatarUrl}" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'">
                         <div class="info">
                             <h3>${cleanName}</h3>
                             <p><strong>ID:</strong> ${userId}</p>
-                            <span class="badge" style="background: ${color}">${p.Team || "Civilian"}</span>
-                            ${p.Callsign ? `<span class="badge" style="background: #333">${p.Callsign}</span>` : ''}
+                            <div class="badge-container">
+                                <span class="badge" style="background: ${color}; color: #000;">${p.Team || "Civilian"}</span>
+                                ${p.Callsign ? `<span class="badge" style="background: #333; border: 1px solid #555;">${p.Callsign}</span>` : ''}
+                                ${staffBadgeHTML}
+                            </div>
                         </div>
                     </div>
                 `;
 
                 if (markers[cleanName]) {
-                    // Update existing marker
                     markers[cleanName].setLatLng([y, x]);
-                    // Only update popup content if popup isn't currently open to prevent flicker
                     if (!markers[cleanName].isPopupOpen()) {
                         markers[cleanName].setPopupContent(popupHTML);
                     }
                 } else {
-                    // Create new marker
                     markers[cleanName] = L.circleMarker([y, x], {
                         radius: 5,
                         color: color,
@@ -227,7 +238,6 @@
                 }
             });
 
-            // Cleanup markers that don't match the filter or left the server
             Object.keys(markers).forEach(name => {
                 if (!currentNames.includes(name)) {
                     map.removeLayer(markers[name]);
@@ -235,16 +245,14 @@
                 }
             });
 
-            // Update visible units count
             document.getElementById('stat-units').innerText = unitsDisplayed;
         }
 
-        // Data Sync Logic
         async function syncData() {
             try {
                 const response = await fetch('/api/erlc-map-api');
                 const data = await response.json();
-                latestData = data; // Save to global state
+                latestData = data; 
 
                 document.getElementById('stat-pop').innerText = `${data.CurrentPlayers} / ${data.MaxPlayers}`;
                 document.getElementById('stat-time').innerText = new Date().toLocaleTimeString();
