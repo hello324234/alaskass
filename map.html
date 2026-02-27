@@ -19,49 +19,56 @@
         body { background: var(--bg); color: white; overflow-x: hidden; }
 
         /* Navigation */
-        .nav-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 1200px; z-index: 1000; }
-        nav { background: rgba(15, 15, 18, 0.7); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 100px; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 1200px; z-index: 1000; animation: slideDown 0.8s ease-out; }
+        nav { background: rgba(15, 15, 18, 0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--border); border-radius: 100px; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         
-        .status-pill { font-size: 0.75rem; color: var(--text-dim); display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.3); padding: 6px 15px; border-radius: 50px; border: 1px solid var(--border); }
-        .live-dot { width: 8px; height: 8px; background: #444; border-radius: 50%; transition: 0.3s; }
-        .live-dot.active { background: #22c55e; box-shadow: 0 0 10px #22c55e; }
+        .status-pill { font-size: 0.75rem; color: var(--text-dim); display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.4); padding: 6px 15px; border-radius: 50px; border: 1px solid var(--border); letter-spacing: 0.5px; }
+        .live-dot { width: 8px; height: 8px; background: #444; border-radius: 50%; transition: all 0.4s ease; }
+        .live-dot.active { background: #22c55e; box-shadow: 0 0 12px #22c55e; animation: pulse 2s infinite; }
 
         /* Layout */
-        .wrapper { padding: 130px 5% 50px; max-width: 1600px; margin: 0 auto; }
+        .wrapper { padding: 130px 5% 50px; max-width: 1600px; margin: 0 auto; animation: fadeIn 1s ease-out; }
         .header-area { text-align: center; margin-bottom: 40px; }
+        .header-area h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         
         /* Stats */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .stat-box { background: var(--bg-soft); border: 1px solid var(--border); padding: 20px; border-radius: 20px; }
-        .stat-box small { color: var(--text-dim); font-size: 0.7rem; text-transform: uppercase; font-weight: 700; }
+        .stat-box { background: rgba(13, 13, 17, 0.8); backdrop-filter: blur(10px); border: 1px solid var(--border); padding: 20px; border-radius: 20px; transition: transform 0.3s ease, border-color 0.3s ease; }
+        .stat-box:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.15); }
+        .stat-box small { color: var(--text-dim); font-size: 0.7rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
         .stat-box div { font-size: 1.4rem; font-weight: 800; margin-top: 5px; color: var(--accent); }
 
         /* Controls (Search & Filter) */
         .controls-bar { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
-        .control-input { flex: 1; min-width: 250px; background: var(--bg-soft); border: 1px solid var(--border); color: white; padding: 15px 20px; border-radius: 15px; outline: none; transition: 0.2s; font-size: 0.95rem; }
-        .control-input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(56, 189, 248, 0.1); }
-        select.control-input { flex: 0.3; min-width: 180px; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 1rem top 50%; background-size: 0.65rem auto; }
+        .control-input { flex: 1; min-width: 250px; background: rgba(13, 13, 17, 0.8); backdrop-filter: blur(10px); border: 1px solid var(--border); color: white; padding: 15px 20px; border-radius: 15px; outline: none; transition: all 0.3s ease; font-size: 0.95rem; }
+        .control-input:focus, .control-input:hover { border-color: var(--accent); box-shadow: 0 0 20px rgba(56, 189, 248, 0.15); background: rgba(20, 20, 25, 0.9); }
+        select.control-input { flex: 0.3; min-width: 180px; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 1.2rem top 50%; background-size: 0.65rem auto; }
 
         /* Map */
-        .map-card { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 30px; padding: 20px; position: relative; }
+        .map-card { background: rgba(13, 13, 17, 0.8); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 30px; padding: 20px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         #map-canvas { width: 100%; height: 70vh; border-radius: 20px; background: #08080a; border: 1px solid rgba(255,255,255,0.03); }
 
-        .unit-label { background: rgba(0, 0, 0, 0.9); border: 1px solid var(--accent); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 800; border-width: 1px; }
+        .unit-label { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(4px); border: 1px solid var(--accent); color: white; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; border-width: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: opacity 0.3s ease; }
 
-        /* Leaflet Custom Popups */
-        .leaflet-popup-content-wrapper { background: #121218; border: 1px solid var(--border); border-radius: 16px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .leaflet-popup-tip { background: #121218; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
-        .leaflet-container a.leaflet-popup-close-button { color: var(--text-dim); top: 10px; right: 10px; }
-        .leaflet-container a.leaflet-popup-close-button:hover { color: white; }
+        /* Leaflet Custom Popups - Glassmorphic */
+        .leaflet-popup-content-wrapper { background: rgba(18, 18, 24, 0.85) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 16px; color: white; box-shadow: 0 15px 35px rgba(0,0,0,0.6) !important; padding: 5px; }
+        .leaflet-popup-tip { background: rgba(18, 18, 24, 0.85) !important; backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
+        .leaflet-container a.leaflet-popup-close-button { color: var(--text-dim) !important; top: 12px !important; right: 12px !important; transition: color 0.2s ease; }
+        .leaflet-container a.leaflet-popup-close-button:hover { color: white !important; }
 
-        .profile-popup { display: flex; gap: 15px; align-items: center; min-width: 230px; padding: 5px; }
-        /* Forces the image to be a circle/square headshot depending on border-radius */
-        .profile-popup img { width: 65px; height: 65px; border-radius: 12px; border: 2px solid var(--accent); object-fit: cover; background: #222; }
-        .profile-popup .info h3 { margin: 0 0 4px 0; font-size: 1.1rem; font-weight: 800; }
+        .profile-popup { display: flex; gap: 15px; align-items: center; min-width: 240px; padding: 8px; animation: popupFadeIn 0.3s ease-out; }
+        .profile-popup img { width: 70px; height: 70px; border-radius: 14px; border: 2px solid var(--accent); object-fit: cover; background: #222; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+        .profile-popup .info h3 { margin: 0 0 4px 0; font-size: 1.15rem; font-weight: 800; }
         .profile-popup .info p { margin: 2px 0; font-size: 0.8rem; color: var(--text-dim); }
         
-        .badge-container { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
-        .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; color: white; text-transform: uppercase; letter-spacing: 0.5px;}
+        .badge-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; color: white; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+        /* Animations */
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+        @keyframes popupFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -75,7 +82,7 @@
 
     <div class="wrapper">
         <div class="header-area">
-            <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 10px;">Live Asset Tracking</h1>
+            <h1>Live Asset Tracking</h1>
             <p style="color: var(--text-dim);">Real-time GPS coordinate pinpointing for all active server units.</p>
         </div>
 
@@ -114,7 +121,6 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Map Initialization
         const map = L.map('map-canvas', { crs: L.CRS.Simple, minZoom: -2, maxZoom: 1 });
         const bounds = [[0, 0], [3120, 3120]];
         L.imageOverlay('https://alpha.duckybot.xyz/assets/erlc-map.png', bounds).addTo(map);
@@ -122,20 +128,13 @@
 
         let markers = {};
         let latestData = { Players: [] };
+        let avatarCache = {}; // Caches the Roblox Headshot URLs
         
-        // Filter States
         let currentSearch = "";
         let currentFilter = "all";
 
-        document.getElementById('search-input').addEventListener('input', (e) => {
-            currentSearch = e.target.value.toLowerCase();
-            renderMap();
-        });
-
-        document.getElementById('team-filter').addEventListener('change', (e) => {
-            currentFilter = e.target.value.toLowerCase();
-            renderMap();
-        });
+        document.getElementById('search-input').addEventListener('input', (e) => { currentSearch = e.target.value.toLowerCase(); renderMap(); });
+        document.getElementById('team-filter').addEventListener('change', (e) => { currentFilter = e.target.value.toLowerCase(); renderMap(); });
 
         function getTeamColor(team) {
             team = team.toLowerCase();
@@ -143,7 +142,7 @@
             if (team.includes("sheriff")) return "#d97706";
             if (team.includes("fire") || team.includes("ems")) return "#dc2626";
             if (team.includes("dot")) return "#f59e0b";
-            return "#ffffff"; // Civilians / Unknown
+            return "#ffffff"; 
         }
 
         function checkFilterMatch(player) {
@@ -152,26 +151,14 @@
             const callsign = (player.Callsign || "").toLowerCase();
             const permission = (player.Permission || "Normal").toLowerCase();
 
-            // Check Search
-            if (currentSearch && !cleanName.includes(currentSearch) && !callsign.includes(currentSearch)) {
-                return false;
-            }
-
-            // Check Dropdown Filter
+            if (currentSearch && !cleanName.includes(currentSearch) && !callsign.includes(currentSearch)) return false;
             if (currentFilter === "all") return true;
             if (currentFilter === "pd" && team.includes("police")) return true;
             if (currentFilter === "sheriff" && team.includes("sheriff")) return true;
             if (currentFilter === "fd" && (team.includes("fire") || team.includes("ems"))) return true;
             if (currentFilter === "dot" && team.includes("dot")) return true;
             if (currentFilter === "civ" && (team.includes("civilian") || team === "")) return true;
-            
-            // STAFF FILTER: Checks ERLC Server Permissions for Mods, Admins, and Owners
-            if (currentFilter === "staff" && (
-                permission.includes("mod") || 
-                permission.includes("admin") || 
-                permission.includes("owner")
-            )) return true;
-
+            if (currentFilter === "staff" && (permission.includes("mod") || permission.includes("admin") || permission.includes("owner"))) return true;
             return false;
         }
 
@@ -195,12 +182,9 @@
                 const color = getTeamColor(p.Team);
                 const label = p.Callsign ? `${cleanName} [${p.Callsign}]` : cleanName;
 
-                // Roblox strictly formats this specific URL to return the 150x150 Face Headshot
-                const avatarUrl = userId !== "Unknown" 
-                    ? `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150&format=png`
-                    : `https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png`;
+                // Pull from our new Cache, fallback to placeholder if not loaded yet
+                const avatarUrl = avatarCache[userId] || `https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png`;
 
-                // Generate Staff Badge HTML if they have permissions
                 let staffBadgeHTML = "";
                 if (permission !== "Normal") {
                     staffBadgeHTML = `<span class="badge" style="background: #9333ea; border: 1px solid #c084fc;">${permission}</span>`;
@@ -222,18 +206,20 @@
                 `;
 
                 if (markers[cleanName]) {
+                    // Smoothly slide marker to new position (Leaflet feature)
                     markers[cleanName].setLatLng([y, x]);
+                    
                     if (!markers[cleanName].isPopupOpen()) {
                         markers[cleanName].setPopupContent(popupHTML);
                     }
                 } else {
                     markers[cleanName] = L.circleMarker([y, x], {
-                        radius: 5,
+                        radius: 6,
                         color: color,
                         fillOpacity: 1,
                         weight: 2
                     }).addTo(map)
-                      .bindTooltip(label, { permanent: true, direction: 'top', className: 'unit-label' })
+                      .bindTooltip(label, { permanent: true, direction: 'top', className: 'unit-label', offset: [0, -5] })
                       .bindPopup(popupHTML);
                 }
             });
@@ -248,12 +234,52 @@
             document.getElementById('stat-units').innerText = unitsDisplayed;
         }
 
+        async function fetchRobloxAvatars(userIds) {
+            if (userIds.length === 0) return;
+            
+            // Join all IDs with a comma for a batch request
+            const idsString = userIds.join(',');
+            
+            try {
+                // Note: We use a public CORS proxy here because Roblox blocks browser fetches.
+                // For production, you should move this request into your '/api/erlc-map-api' backend.
+                const proxyUrl = 'https://corsproxy.io/?';
+                const targetUrl = encodeURIComponent(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${idsString}&size=150x150&format=Png`);
+                
+                const response = await fetch(proxyUrl + targetUrl);
+                const json = await response.json();
+                
+                if (json.data) {
+                    json.data.forEach(item => {
+                        avatarCache[item.targetId] = item.imageUrl;
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to fetch batch avatars:", err);
+            }
+        }
+
         async function syncData() {
             try {
                 const response = await fetch('/api/erlc-map-api');
                 const data = await response.json();
                 latestData = data; 
 
+                // 1. Figure out which user IDs we haven't fetched avatars for yet
+                const newIdsToFetch = [];
+                data.Players.forEach(p => {
+                    const userId = p.Player.split(':')[1];
+                    if (userId && !avatarCache[userId]) {
+                        newIdsToFetch.push(userId);
+                    }
+                });
+
+                // 2. Batch fetch missing avatars from the API BEFORE rendering the map
+                if (newIdsToFetch.length > 0) {
+                    await fetchRobloxAvatars(newIdsToFetch);
+                }
+
+                // 3. Update the UI and Map
                 document.getElementById('stat-pop').innerText = `${data.CurrentPlayers} / ${data.MaxPlayers}`;
                 document.getElementById('stat-time').innerText = new Date().toLocaleTimeString();
                 
