@@ -11,14 +11,16 @@
 
     <style>
         :root {
-            --bg: #050505; --bg-soft: #0d0d11; --border: rgba(255, 255, 255, 0.08);
-            --text-dim: #94a3b8; --accent: #38bdf8;
+            --bg: #050505; 
+            --bg-soft: #0d0d11; 
+            --border: rgba(255, 255, 255, 0.08);
+            --text-dim: #94a3b8; 
+            --accent: #38bdf8;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: var(--bg); color: white; overflow-x: hidden; }
 
-        /* Navigation */
         .nav-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 1200px; z-index: 1000; animation: slideDown 0.8s ease-out; }
         nav { background: rgba(15, 15, 18, 0.65); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--border); border-radius: 100px; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         
@@ -26,31 +28,26 @@
         .live-dot { width: 8px; height: 8px; background: #444; border-radius: 50%; transition: all 0.4s ease; }
         .live-dot.active { background: #22c55e; box-shadow: 0 0 12px #22c55e; animation: pulse 2s infinite; }
 
-        /* Layout */
         .wrapper { padding: 130px 5% 50px; max-width: 1600px; margin: 0 auto; animation: fadeIn 1s ease-out; }
         .header-area { text-align: center; margin-bottom: 40px; }
         .header-area h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         
-        /* Stats */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .stat-box { background: rgba(13, 13, 17, 0.8); backdrop-filter: blur(10px); border: 1px solid var(--border); padding: 20px; border-radius: 20px; transition: transform 0.3s ease, border-color 0.3s ease; }
         .stat-box:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.15); }
         .stat-box small { color: var(--text-dim); font-size: 0.7rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
         .stat-box div { font-size: 1.4rem; font-weight: 800; margin-top: 5px; color: var(--accent); }
 
-        /* Controls (Search & Filter) */
         .controls-bar { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
         .control-input { flex: 1; min-width: 250px; background: rgba(13, 13, 17, 0.8); backdrop-filter: blur(10px); border: 1px solid var(--border); color: white; padding: 15px 20px; border-radius: 15px; outline: none; transition: all 0.3s ease; font-size: 0.95rem; }
         .control-input:focus, .control-input:hover { border-color: var(--accent); box-shadow: 0 0 20px rgba(56, 189, 248, 0.15); background: rgba(20, 20, 25, 0.9); }
         select.control-input { flex: 0.3; min-width: 180px; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 1.2rem top 50%; background-size: 0.65rem auto; }
 
-        /* Map */
         .map-card { background: rgba(13, 13, 17, 0.8); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 30px; padding: 20px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         #map-canvas { width: 100%; height: 70vh; border-radius: 20px; background: #08080a; border: 1px solid rgba(255,255,255,0.03); }
 
         .unit-label { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(4px); border: 1px solid var(--accent); color: white; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; border-width: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: opacity 0.3s ease; }
 
-        /* Leaflet Custom Popups - Glassmorphic */
         .leaflet-popup-content-wrapper { background: rgba(18, 18, 24, 0.85) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 16px; color: white; box-shadow: 0 15px 35px rgba(0,0,0,0.6) !important; padding: 5px; }
         .leaflet-popup-tip { background: rgba(18, 18, 24, 0.85) !important; backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); }
         .leaflet-container a.leaflet-popup-close-button { color: var(--text-dim) !important; top: 12px !important; right: 12px !important; transition: color 0.2s ease; }
@@ -64,7 +61,6 @@
         .badge-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
         .badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; color: white; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
-        /* Animations */
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideDown { from { opacity: 0; transform: translate(-50%, -20px); } to { opacity: 1; transform: translate(-50%, 0); } }
@@ -128,7 +124,7 @@
 
         let markers = {};
         let latestData = { Players: [] };
-        let avatarCache = {}; // Caches the Roblox Headshot URLs
+        let avatarCache = {}; 
         
         let currentSearch = "";
         let currentFilter = "all";
@@ -137,7 +133,7 @@
         document.getElementById('team-filter').addEventListener('change', (e) => { currentFilter = e.target.value.toLowerCase(); renderMap(); });
 
         function getTeamColor(team) {
-            team = team.toLowerCase();
+            team = (team || "").toLowerCase();
             if (team.includes("police")) return "#2563eb";
             if (team.includes("sheriff")) return "#d97706";
             if (team.includes("fire") || team.includes("ems")) return "#dc2626";
@@ -182,8 +178,7 @@
                 const color = getTeamColor(p.Team);
                 const label = p.Callsign ? `${cleanName} [${p.Callsign}]` : cleanName;
 
-                // Pull from our new Cache, fallback to placeholder if not loaded yet
-                const avatarUrl = avatarCache[userId] || `https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png`;
+                const avatarUrl = avatarCache[userId] || `https://tr.rbxcdn.com/38c35698b4c09d06b5a32b210214a601/150/150/AvatarHeadshot/Png`;
 
                 let staffBadgeHTML = "";
                 if (permission !== "Normal") {
@@ -192,12 +187,12 @@
 
                 const popupHTML = `
                     <div class="profile-popup">
-                        <img src="${avatarUrl}" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'">
+                        <img src="${avatarUrl}" onerror="this.src='https://tr.rbxcdn.com/38c35698b4c09d06b5a32b210214a601/150/150/AvatarHeadshot/Png'">
                         <div class="info">
                             <h3>${cleanName}</h3>
                             <p><strong>ID:</strong> ${userId}</p>
                             <div class="badge-container">
-                                <span class="badge" style="background: ${color}; color: #000;">${p.Team || "Civilian"}</span>
+                                <span class="badge" style="background: ${color}; color: ${color === '#ffffff' ? '#000' : '#fff'};">${p.Team || "Civilian"}</span>
                                 ${p.Callsign ? `<span class="badge" style="background: #333; border: 1px solid #555;">${p.Callsign}</span>` : ''}
                                 ${staffBadgeHTML}
                             </div>
@@ -206,9 +201,7 @@
                 `;
 
                 if (markers[cleanName]) {
-                    // Smoothly slide marker to new position (Leaflet feature)
                     markers[cleanName].setLatLng([y, x]);
-                    
                     if (!markers[cleanName].isPopupOpen()) {
                         markers[cleanName].setPopupContent(popupHTML);
                     }
@@ -236,26 +229,21 @@
 
         async function fetchRobloxAvatars(userIds) {
             if (userIds.length === 0) return;
-            
-            // Join all IDs with a comma for a batch request
             const idsString = userIds.join(',');
+            const proxyUrl = 'https://api.allorigins.win/get?url=';
+            const targetUrl = encodeURIComponent(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${idsString}&size=150x150&format=Png&isCircular=false`);
             
             try {
-                // Note: We use a public CORS proxy here because Roblox blocks browser fetches.
-                // For production, you should move this request into your '/api/erlc-map-api' backend.
-                const proxyUrl = 'https://corsproxy.io/?';
-                const targetUrl = encodeURIComponent(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${idsString}&size=150x150&format=Png`);
-                
                 const response = await fetch(proxyUrl + targetUrl);
-                const json = await response.json();
-                
+                const data = await response.json();
+                const json = JSON.parse(data.contents);
                 if (json.data) {
                     json.data.forEach(item => {
                         avatarCache[item.targetId] = item.imageUrl;
                     });
                 }
             } catch (err) {
-                console.error("Failed to fetch batch avatars:", err);
+                console.error("Avatar error:", err);
             }
         }
 
@@ -265,7 +253,6 @@
                 const data = await response.json();
                 latestData = data; 
 
-                // 1. Figure out which user IDs we haven't fetched avatars for yet
                 const newIdsToFetch = [];
                 data.Players.forEach(p => {
                     const userId = p.Player.split(':')[1];
@@ -274,22 +261,19 @@
                     }
                 });
 
-                // 2. Batch fetch missing avatars from the API BEFORE rendering the map
                 if (newIdsToFetch.length > 0) {
                     await fetchRobloxAvatars(newIdsToFetch);
                 }
 
-                // 3. Update the UI and Map
                 document.getElementById('stat-pop').innerText = `${data.CurrentPlayers} / ${data.MaxPlayers}`;
                 document.getElementById('stat-time').innerText = new Date().toLocaleTimeString();
-                
                 document.getElementById('sync-text').innerText = "LIVE CONNECTION";
                 document.getElementById('sync-dot').classList.add('active');
 
                 renderMap();
 
             } catch (err) {
-                console.error("Map Sync Error:", err);
+                console.error("Sync error:", err);
                 document.getElementById('sync-text').innerText = "API ERROR";
                 document.getElementById('sync-dot').classList.remove('active');
             }
