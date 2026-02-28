@@ -74,6 +74,9 @@
             transition: 0.3s;
         }
         .nav-links a:hover { color: white; }
+        
+        /* Highlight Color */
+        .nav-links a.active { color: white; }
 
         .btn-premium {
             background: white;
@@ -94,7 +97,15 @@
             box-shadow: 0 0 25px rgba(255,255,255,0.3); 
         }
 
-        .mobile-toggle { display: none; cursor: pointer; color: white; height: 32px; width: 32px; align-items: center; justify-content: center; }
+        .mobile-toggle { 
+            display: none; 
+            cursor: pointer; 
+            color: white; 
+            height: 32px;
+            width: 32px;
+            align-items: center;
+            justify-content: center;
+        }
         .hero {
             height: 70vh;
             display: flex;
@@ -146,6 +157,7 @@
         }
         .card:hover { transform: translateY(-10px); border-color: white; }
         .card i { font-size: 2.5rem; margin-bottom: 25px; color: white; }
+        
         footer { padding: 100px 10% 40px; border-top: 1px solid var(--border); background: #030303; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 80px; }
         .footer-col h4 { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 30px; }
@@ -179,7 +191,8 @@
             transition: 0.6s cubic-bezier(0.8, 0, 0.2, 1);
         }
         .mobile-hud.active { transform: translateY(0); }
-        .mobile-hud a { font-size: 2.5rem; font-weight: 800; color: white; text-decoration: none; }
+        .mobile-hud a { font-size: 2.5rem; font-weight: 800; color: var(--text-dim); text-decoration: none; }
+        .mobile-hud a.active { color: white; }
 
         @media (max-width: 1024px) {
             .nav-links, .nav-container .btn-premium { display: none; }
@@ -188,24 +201,51 @@
             .footer-grid { grid-template-columns: 1fr; text-align: center; }
             .square-img-container { height: 300px; }
         }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.03);
+            padding: 8px 16px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            font-size: 0.75rem;
+            color: white;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #444; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        .status-dot.online {
+            background: #22c55e;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+        }
     </style>
 </head>
 <body>
 
     <div class="nav-container">
-        <nav>
+        <nav id="desktopNav">
             <a href="index.html" class="nav-brand">
                 <img src="logo.png" alt="Logo">
                 <span>ALASKA.</span>
             </a>
+            
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="about.html" style="color: white;">About Us</a></li>
+                <li><a href="about.html" class="active">About Us</a></li>
                 <li><a href="rules.html">Rules</a></li>
                 <li><a href="map.html">Map</a></li>
                 <li><a href="https://discord.gg/alaskas">Discord</a></li>
+                <li><a href="shop.html">Shop</a></li>
             </ul>
+
             <a href="roblox://placeId=2534724415&launchData=%7B%22psCode%22%3A%22ASRUSA%22%7D" class="btn-premium">JOIN SERVER</a>
+
             <div class="mobile-toggle" onclick="toggleMenu()">
                 <i class="fas fa-bars-staggered" style="font-size: 1.5rem;"></i>
             </div>
@@ -215,10 +255,11 @@
     <div class="mobile-hud" id="mobileMenu">
         <i class="fas fa-times" style="position: absolute; top: 40px; right: 40px; font-size: 2rem;" onclick="toggleMenu()"></i>
         <a href="index.html" onclick="toggleMenu()">HOME</a>
-        <a href="about.html" onclick="toggleMenu()">ABOUT US</a>
+        <a href="about.html" onclick="toggleMenu()" class="active">ABOUT US</a>
         <a href="rules.html" onclick="toggleMenu()">RULES</a>
         <a href="map.html" onclick="toggleMenu()">MAP</a>
-        <a href="https://discord.gg/alaskas" class="btn-premium" style="color: black !important; font-size: 1.2rem;">JOIN DISCORD</a>
+        <a href="shop.html" onclick="toggleMenu()">SHOP</a>
+        <a href="https://discord.gg/alaskas" onclick="toggleMenu()" class="btn-premium" style="color: black !important; font-size: 1.2rem;">JOIN DISCORD</a>
     </div>
 
     <section class="hero">
@@ -260,11 +301,11 @@
         </div>
 
         <div style="text-align: center; margin-top: 80px;" class="reveal">
-            <a href="#" class="btn-premium" style="padding: 22px 60px; font-size: 1.1rem;">JOIN THE DISCORD</a>
+            <a href="https://discord.gg/alaskas" class="btn-premium" style="padding: 22px 60px; font-size: 1.1rem;">JOIN THE DISCORD</a>
         </div>
     </section>
 
-<footer>
+    <footer>
         <div class="footer-grid">
             <div class="footer-brand">
                 <div class="nav-brand">
@@ -279,14 +320,14 @@
                     <li><a href="index.html">Home</a></li>
                     <li><a href="about.html">About Us</a></li>
                     <li><a href="rules.html">Rules</a></li>
-                    <li><a href="#">Support</a></li>
+                    <li><a href="https://discord.gg/alaskas">Support</a></li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Legal</h4>
+                <h4>About</h4>
                 <ul>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="https://discord.gg/alaskas">Discord</a></li>
+                    <li><a href="https://advertisingerlc.xyz/discovery/12">Review Us</a></li>
                 </ul>
             </div>
         </div>
@@ -299,36 +340,6 @@
             </div>
         </div>
     </footer>
-
-    <style>
-        .status-pill {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255,255,255,0.03);
-            padding: 8px 16px;
-            border-radius: 100px;
-            border: 1px solid var(--border);
-            font-size: 0.75rem;
-            color: white;
-        }
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #444; /* Default gray */
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
-        .status-dot.online {
-            background: #22c55e; /* Green */
-            box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
-        }
-        .status-dot.offline {
-            background: #ef4444; /* Red */
-        }
-    </style>
-
-    <script src="script.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
