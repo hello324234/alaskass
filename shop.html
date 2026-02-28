@@ -1,1 +1,627 @@
-l
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alaska State | Server Shop</title>
+
+    <meta name="theme-color" content="#38bdf8">
+    <meta property="og:title" content="Alaska State | Official Store">
+    <meta property="og:description" content="Support the server and unlock exclusive in-game perks, roles, and advertisements.">
+    <meta property="og:image" content="https://www.alaska-roleplay.xyz/banner.png">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #050505; 
+            --bg-soft: #0d0d11; 
+            --glass: rgba(15, 15, 18, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-dim: #94a3b8; 
+            --accent: #38bdf8;
+            --success: #22c55e;
+            --purple: #a855f7;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: white; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+        .nav-container {
+            position: fixed;
+            top: 30px;
+            left: 50%; 
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1100px;
+            z-index: 1000;
+        }
+
+        nav {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 14px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .nav-brand { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            text-decoration: none; 
+            color: white; 
+            font-weight: 800; 
+            font-size: 1.1rem;
+        }
+        .nav-brand img { height: 32px; width: auto; transition: transform 0.3s; }
+        .nav-brand:hover img { transform: rotate(-10deg); }
+
+        .nav-links { 
+            display: flex; 
+            list-style: none; 
+            gap: 40px; 
+            margin: 0 20px;
+        }
+        .nav-links a { 
+            text-decoration: none; 
+            color: var(--text-dim); 
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            letter-spacing: 1px; 
+            transition: 0.3s;
+        }
+        .nav-links a:hover { color: white; }
+        
+        .nav-links a.active { color: white; }
+
+        .btn-premium {
+            background: white;
+            color: black;
+            padding: 12px 30px;
+            border-radius: 100px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 0.85rem;
+            transition: 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        .btn-premium:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 0 25px rgba(255,255,255,0.3); 
+            background: #f0f0f0;
+        }
+        .btn-premium:active { transform: scale(0.98); }
+
+        .mobile-toggle { 
+            display: none; 
+            cursor: pointer; 
+            color: white; 
+            height: 32px;
+            width: 32px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wrapper { padding: 130px 5% 50px; max-width: 1400px; margin: 0 auto; min-height: 100vh; }
+
+        .shop-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 50px; }
+        .header-text h1 { font-size: 2.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; }
+        .header-text p { color: var(--text-dim); max-width: 500px; line-height: 1.6; }
+        .official-tag { background: #eab308; color: black; padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; display: inline-block; margin-bottom: 10px; }
+        
+        .header-badges { display: flex; gap: 15px; }
+        .h-badge { background: var(--bg-soft); border: 1px solid var(--border); padding: 15px 25px; border-radius: 15px; text-align: center; }
+        .h-badge span { display: block; font-size: 1.2rem; font-weight: 800; }
+        .h-badge small { color: var(--text-dim); font-size: 0.7rem; font-weight: 700; }
+
+        .shop-container { display: grid; grid-template-columns: 280px 1fr; gap: 40px; }
+
+        .sidebar { display: flex; flex-direction: column; gap: 10px; }
+        .cat-btn { background: transparent; border: 1px solid transparent; color: var(--text-dim); padding: 14px 20px; border-radius: 12px; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 12px; font-weight: 600; transition: all 0.3s; }
+        .cat-btn i { width: 20px; }
+        .cat-btn:hover { background: rgba(255,255,255,0.03); color: white; }
+        .cat-btn.active { background: rgba(56, 189, 248, 0.1); border-color: var(--accent); color: white; }
+
+        .claim-card { margin-top: 30px; background: var(--bg-soft); border: 1px solid var(--border); padding: 20px; border-radius: 20px; }
+        .claim-card h4 { margin-bottom: 10px; font-size: 0.9rem; }
+        .claim-card p { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 15px; line-height: 1.5; }
+        .btn-ticket { width: 100%; background: #222; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 10px; cursor: pointer; font-weight: 700; transition: 0.3s; padding: 12px; text-align: center; text-decoration: none; display: block; }
+        .btn-ticket:hover { background: #333; }
+
+        .shop-content { display: none; }
+        .shop-content.active { display: block; animation: fadeIn 0.4s ease-out; }
+
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+
+        .item-card { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 24px; padding: 25px; transition: transform 0.3s; position: relative; overflow: hidden; }
+        .item-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.15); }
+        .item-card h3 { font-size: 1.3rem; margin-bottom: 8px; }
+        .item-card p { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 20px; height: 40px; }
+        .price-row { display: flex; justify-content: space-between; align-items: center; }
+        .price { font-size: 1.2rem; font-weight: 800; }
+        .price span { font-size: 0.8rem; color: var(--text-dim); margin-left: 4px; }
+        .buy-btn { background: var(--success); color: black; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 800; cursor: pointer; }
+        .buy-btn a { color: white; text-decoration: none; }
+
+        .perks-list { list-style: none; margin-bottom: 25px; }
+        .perks-list li { font-size: 0.85rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .perks-list li i { color: var(--success); font-size: 0.8rem; }
+
+        .purple-btn { background: var(--purple); color: white; width: 100%; padding: 15px; border-radius: 12px; font-weight: 800; border: none; cursor: pointer; }
+        .green-btn { background: #2d6a4f; color: white; width: 100%; padding: 15px; border-radius: 12px; font-weight: 800; border: none; cursor: pointer; }
+
+        footer { padding: 100px 10% 40px; border-top: 1px solid var(--border); background: #030303; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 80px; }
+        .footer-col h4 { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 30px; }
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 15px; }
+        .footer-col a { color: var(--text-dim); text-decoration: none; font-size: 0.95rem; transition: 0.3s; }
+        .footer-col a:hover { color: white; padding-left: 5px; }
+        
+        .footer-bottom {
+            margin-top: 80px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            color: #444;
+            font-weight: 800;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+        }
+
+        .mobile-hud {
+            position: fixed;
+            inset: 0;
+            background: rgba(5,5,5,0.98);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 35px;
+            transform: translateY(-100%);
+            transition: 0.6s cubic-bezier(0.8, 0, 0.2, 1);
+        }
+        .mobile-hud.active { transform: translateY(0); }
+        .mobile-hud a { font-size: 2.5rem; font-weight: 800; color: var(--text-dim); text-decoration: none; transition: 0.3s; }
+        .mobile-hud a.active { color: white; }
+
+        @media (max-width: 1024px) {
+            .nav-links, .nav-container .btn-premium { display: none; }
+            .mobile-toggle { display: flex; }
+            nav { padding: 12px 25px; }
+            .wrapper { padding-top: 100px; }
+            .shop-header { flex-direction: column; gap: 20px; }
+            .shop-container { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 50px; text-align: center; }
+            .footer-bottom { flex-direction: column; gap: 15px; text-align: center; }
+        }
+
+.merch-list {
+    display: flex;
+    flex-direction: row; 
+    justify-content: center; 
+    gap: 30px; 
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.roblox-card {
+    flex: 1;
+    max-width: 450px;
+    background: #0f0f0f;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #222;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease;
+}
+
+.roblox-card:hover {
+    transform: scale(1.02);
+    border-color: #333;
+}
+
+.card-image-container {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    background: #1a1a1a;
+}
+
+.card-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.3s ease;
+}
+
+.img-hover { opacity: 0; }
+.roblox-card:hover .img-hover { opacity: 1; }
+.roblox-card:hover .img-main { opacity: 0; }
+
+.tag-sale {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #2ecc71;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 800;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.tag-counter {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    z-index: 10;
+}
+
+.tag-counter::after { content: "1/2"; }
+.roblox-card:hover .tag-counter::after { content: "2/2"; }
+
+.card-content {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.card-content h3 { margin: 0; font-size: 1.1rem; color: #fff; }
+.card-content p { margin: 0; color: #777; font-size: 0.85rem; }
+.card-price { color: #3498db; font-weight: bold; margin-top: 5px; font-size: 1rem; }
+
+.purchase-btn {
+    background: #0088eb;
+    color: white;
+    border: none;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    transition: background 0.2s;
+}
+
+.purchase-btn:hover { background: #0072c5; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.03);
+            padding: 8px 16px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            font-size: 0.75rem;
+            color: white;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #444;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        .status-dot.online {
+            background: #22c55e;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-container">
+        <nav id="desktopNav">
+            <a href="index.html" class="nav-brand">
+                <img src="logo.png" alt="Logo">
+                <span>ALASKA.</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="rules.html">Rules</a></li>
+                <li><a href="map.html">Map</a></li>
+                <li><a href="https://discord.gg/alaskas">Discord</a></li>
+                <li><a href="shop.html" class="active">Shop</a></li>
+
+            </ul>
+
+            <a href="roblox://placeId=2534724415&launchData=%7B%22psCode%22%3A%22ASRUSA%22%7D" class="btn-premium">JOIN SERVER</a>
+
+            <div class="mobile-toggle" onclick="toggleMenu()">
+                <i class="fas fa-bars-staggered" style="font-size: 1.5rem;"></i>
+            </div>
+        </nav>
+    </div>
+
+    <div class="mobile-hud" id="mobileMenu">
+        <i class="fas fa-times" style="position: absolute; top: 40px; right: 40px; font-size: 2rem;" onclick="toggleMenu()"></i>
+        <a href="index.html" onclick="toggleMenu()">HOME</a>
+        <a href="about.html" onclick="toggleMenu()">ABOUT US</a>
+        <a href="rules.html" onclick="toggleMenu()">RULES</a>
+        <a href="map.html" onclick="toggleMenu()">MAP</a>
+        <a href="shop.html" onclick="toggleMenu()" class="active">SHOP</a>
+        <a href="https://discord.gg/alaskas" onclick="toggleMenu()" class="btn-premium" style="color: black !important; font-size: 1.2rem;">JOIN DISCORD</a>
+    </div>
+
+    <div class="wrapper">
+        <div class="shop-header">
+            <div class="header-text">
+                <div class="official-tag"><i class="fas fa-star"></i> OFFICIAL STORE</div>
+                <h1>Server Shop</h1>
+                <p>Support Alaska State Roleplay and unlock exclusive in-game perks, advertisements, and roles. All donations fund server development.</p>
+            </div>
+            <div class="header-badges">
+                <div class="h-badge"><span>96h</span><small>CLAIM TIME</small></div>
+                <div class="h-badge"><span>ToS</span><small>READ FIRST</small></div>
+            </div>
+        </div>
+
+        <div class="shop-container">
+            <div class="sidebar">
+                <button class="cat-btn active" onclick="showTab('ads')"><i class="fas fa-bullhorn"></i> Advertisements</button>
+                <button class="cat-btn" onclick="showTab('roles')"><i class="fas fa-crown"></i> Nitro Perks & Alaska+</button>
+                <button class="cat-btn" onclick="showTab('donations')"><i class="fas fa-hand-holding-dollar"></i> Donations</button>
+                <button class="cat-btn" onclick="showTab('merch')"><i class="fas fa-tshirt"></i> Merchandise</button>
+                <button class="cat-btn" onclick="showTab('tos')"><i class="fas fa-file-contract"></i> Marketplace ToS</button>
+
+                <div class="claim-card">
+                    <h4>Claiming Items</h4>
+                    <p>After purchase, open a Management Ticket within 4 days to claim your perks.</p>
+                    <a href="https://discord.gg/alaskas" class="btn-ticket">Open Ticket</a>
+                </div>
+            </div>
+
+            <div class="main-shop">
+                <div id="ads" class="shop-content active">
+                    <h2 style="margin-bottom: 25px;"><i class="fas fa-bullhorn" style="color: var(--accent);"></i> Paid Advertisements</h2>
+                    <div class="grid-3">
+                        <div class="item-card">
+                            <h3>Everyone Ping Sponsored Giveaway</h3>
+                            <p>One-time sponsored giveaway @everyone ping to all server members.</p>
+                            <div class="price-row">
+                                <div class="price">300 <span>R$</span></div>
+                                <button class="buy-btn"><a href="https://www.roblox.com/catalog/96986948279634/Sponsored-Giveaway-everyone" target="_blank">Buy</a></button>
+                            </div>
+                        </div>
+                        <div class="item-card">
+                            <h3>Here Ping Paid Advertisement</h3>
+                            <p>One-time @here ping paid advertisement to active members.</p>
+                            <div class="price-row">
+                                <div class="price">250 <span>R$</span></div>
+                                <button class="buy-btn"><a href="https://www.roblox.com/catalog/116241367486103/Paid-Ad-here" target="_blank">Buy</a></button>
+                            </div>
+                        </div>
+                        <div class="item-card">
+                            <h3>Everyone Ping Paid Advertisement</h3>
+                            <p>One-time @everyone paid advertisement to active members.</p>
+                            <div class="price-row">
+                                <div class="price">350 <span>R$</span></div>
+                                <button class="buy-btn"><a href="https://www.roblox.com/catalog/102673957716176/paid-ad-everyone" target="_blank">Buy</a></button>
+                            </div>
+                        </div>
+                        <div class="item-card">
+                            <h3>Paid Channel</h3>
+                            <p>Get access to a custom channel for your server.</p>
+                            <div class="price-row">
+                                <div class="price">300 <span>R$</span></div>
+                                <button class="buy-btn"><a href="https://www.roblox.com/catalog/127967937554907/Paid-Channel" target="_blank">Buy</a></button>
+                            </div>
+                        </div>
+                        <div class="item-card">
+                            <h3>Priority</h3>
+                            <p>Get your paid advertisement posted quicker.</p>
+                            <div class="price-row">
+                                <div class="price">500 <span>R$</span></div>
+                                <button class="buy-btn"><a href="https://www.roblox.com/catalog/112289220799467/Skip-Queue" target="_blank">Buy</a></button>
+                            </div>
+                        </div>
+                        <div class="item-card">
+                            <h3>Instant Post</h3>
+                            <p>Get your paid advertisement posted instantly.</p>
+                            <div class="price-row">
+                                <div class="price">2,000 <span>R$</span></div>
+                                <button class="buy-btn"><a href="https://www.roblox.com/catalog/74396969282286/Instant-Post" target="_blank">Buy</a></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="roles" class="shop-content">
+                    <h2 style="margin-bottom: 25px;"><i class="fas fa-crown" style="color: #eab308;"></i> Nitro Perks & Alaska+</h2>
+                    <div class="grid-3">
+                        <div class="item-card">
+                            <h3 style="color: var(--success);">Booster Perks</h3>
+                            <ul class="perks-list">
+                                <li><i class="fas fa-check"></i> Use Media in the Discord server</li>
+                                <li><i class="fas fa-check"></i> Use External Emoji in the Discord server</li>
+                                <li><i class="fas fa-check"></i> Enter Booster-Exclusive Giveaways</li>
+                                <li><i class="fas fa-check"></i> Exclusive Booster Role</li>  
+                            </ul>
+                        </div>
+                        <div class="item-card">
+                            <h3 style="color: var(--purple);">Alaska+</h3>
+                            <ul class="perks-list">
+                                <li><i class="fas fa-check"></i> Priority Suggestion Handling</li>
+                                <li><i class="fas fa-check"></i> Exclusive Only Channels</li>
+                                <li><i class="fas fa-check"></i> Priority Ticket Support</li>
+                                <li><i class="fas fa-check"></i> Gif & Reaction Permissions</li>
+                            </ul>
+                           <a href="https://www.roblox.com/catalog/129535550080274/Alaska" target="_blank"><button class="purple-btn">Purchase on Roblox</button></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="donations" class="shop-content">
+                    <h2 style="margin-bottom: 25px;"><i class="fas fa-hand-holding-dollar" style="color: var(--success);"></i> Donations</h2>
+                    <div class="grid-3">
+                        <div class="item-card">
+                            <h3>1000 Donation</h3>
+                            <p>Donate to the server.</p>
+                            <div class="price-row">
+                                <div class="price">1,000 <span>R$</span></div>
+                                <button class="buy-btn"><a href="https://www.roblox.com/catalog/112211871456183/Donation-1" target="_blank">Buy</a></button>
+                            </div>
+                        </div>
+                        <div class="item-card">
+                            <h3>2500 Donation</h3>
+                            <p>Donate to the server.</p>
+                            <div class="price-row">
+                                <div class="price">2,500 <span>R$</span></div>
+                                <button class="buy-btn"><a href="https://www.roblox.com/catalog/77558709676973/Donation-2" target="_blank">Buy</a></button>
+                            </div>
+                        </div>
+                        <div class="item-card">
+                            <h3>5000 Donation</h3>
+                            <p>Donate to the server.</p>
+                            <div class="price-row">
+                                <div class="price">5.000 <span>R$</span></div>
+                                <button class="buy-btn"><a href="https://www.roblox.com/catalog/73108856672110/Donation-3" target="_blank">Buy</a></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+<div id="merch" class="shop-content">
+    <h2 style="margin-bottom: 25px;"><i class="fas fa-tshirt" style="color: #2ecc71;"></i> Official Merchandise</h2>
+    
+    <div class="merch-list">
+        
+        <div class="roblox-card">
+            <div class="card-image-container">
+                <div class="tag-sale">NEW</div>
+                <div class="tag-counter"></div>
+                <div class="tag-counter"></div> <img src="https://media.discordapp.net/attachments/1393702085115121846/1477434373941887189/image.png?ex=69a4bf7c&is=69a36dfc&hm=c02c9e1dbfe06d8ff7aad9ccd56830e3084a9ef14c66acbe38f6b384d263e5dc&=&format=webp&quality=lossless&width=586&height=290" class="img-main">
+                <div class="tag-counter"></div> <img src="https://media.discordapp.net/attachments/1393702085115121846/1477434633217114213/image.png?ex=69a4bfb9&is=69a36e39&hm=16c29af5385026ce04708f9263b4d338e17fddae307890de8de139bd98a924d2&=&format=webp&quality=lossless&width=603&height=290" class="img-hover">
+            </div>
+            <div class="card-content">
+                <h3>Alaska Merch</h3>
+                <p>Blue Alaska State Top</p>
+                <div class="card-price">15 R$</div>
+                <a href="https://www.roblox.com/catalog/122147842211854/Alaska-State-Merch-Top" target="_blank" class="purchase-btn">Purchase</a>
+            </div>
+        </div>
+
+        <div class="roblox-card">
+            <div class="card-image-container">
+                <div class="tag-sale">NEW</div>
+                <div class="tag-counter"></div>
+                <div class="tag-counter"></div> <img src="https://media.discordapp.net/attachments/1393702085115121846/1477433993468051628/image.png?ex=69a4bf21&is=69a36da1&hm=7694b2b6ad1a0a963ebb8d5ab9034e5e208b2d3d6da8f330284fb92d049220d7&=&format=webp&quality=lossless&width=585&height=317" class="img-main">
+                <div class="tag-counter"></div> <img src="https://media.discordapp.net/attachments/1393702085115121846/1477434063387234424/image.png?ex=69a4bf32&is=69a36db2&hm=439b7a191e5ad7e716865ad6239ce6000fd86bfda83c5ba9883ed94bfddc142c&=&format=webp&quality=lossless&width=483&height=371" class="img-hover">
+            </div>
+            <div class="card-content">
+                <h3>Alaska Cargos</h3>
+                <p>Brown Shaded Cargo Pants</p>
+                <div class="card-price">15 R$</div>
+                <a href="https://www.roblox.com/catalog/79987343707522/Alaska-Cargos-Merch" target="_blank" class="purchase-btn">Purchase</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+                <div id="tos" class="shop-content">
+                    <div style="background: rgba(220, 38, 38, 0.05); border: 1px solid rgba(220, 38, 38, 0.2); padding: 40px; border-radius: 24px;">
+                        <h2 style="color: #ef4444; margin-bottom: 20px;"><i class="fas fa-exclamation-triangle"></i> Marketplace ToS</h2>
+                        <ul class="perks-list" style="color: var(--text-dim);">
+                            <li><i class="fas fa-circle" style="font-size: 5px; color: #ef4444;"></i> We do not offer refunds.</li>
+                            <li><i class="fas fa-circle" style="font-size: 5px; color: #ef4444;"></i> All purchases must be redeemed within 4 days.</li>
+                            <li><i class="fas fa-circle" style="font-size: 5px; color: #ef4444;"></i> Rules violations may lead to perk removal.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="nav-brand">
+                    <img src="logo.png" alt="Logo">
+                    <span>ALASKA.</span>
+                </div>
+                <p style="color: var(--text-dim); margin-top: 20px; line-height: 1.6;">Professional community management for ER:LC. Dedicated to high-stakes immersion and scale.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Internal</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="rules.html">Rules</a></li>
+                    <li><a href="https://discord.gg/alaskas">Support</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>About</h4>
+                <ul>
+                    <li><a href="https://discord.gg/alaskas">Discord</a></li>
+                    <li><a href="https://advertisingerlc.xyz/discovery/12">Review Us</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 ALASKA STATE ROLEPLAY • ALL RIGHTS RESERVED</span>
+            <div id="serverStatus" class="status-pill">
+                <div class="status-dot"></div>
+                <span id="statusText">Fetching status...</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+
+    <script>
+        const lenis = new Lenis({ duration: 1.5 });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.from(".nav-container", { y: -50, opacity: 0, duration: 1, ease: "power4.out" });
+
+        function toggleMenu() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+        }
+
+        function showTab(tabId) {
+            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.shop-content').forEach(content => content.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+    </script>
+</body>
+</html>
