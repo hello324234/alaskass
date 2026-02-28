@@ -46,6 +46,12 @@
         .map-card { background: rgba(13, 13, 17, 0.8); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 30px; padding: 20px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         #map-canvas { width: 100%; height: 70vh; border-radius: 20px; background: #08080a; border: 1px solid rgba(255,255,255,0.03); }
 
+        .leaflet-bar { border: 1px solid var(--border) !important; border-radius: 12px !important; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important; }
+        .leaflet-bar a { background: rgba(15, 15, 18, 0.65) !important; backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); color: white !important; border-bottom: 1px solid var(--border) !important; transition: all 0.2s ease; }
+        .leaflet-bar a:last-child { border-bottom: none !important; }
+        .leaflet-bar a:hover { background: rgba(30, 30, 35, 0.8) !important; color: var(--accent) !important; }
+        .leaflet-control-zoom-in, .leaflet-control-zoom-out { font-size: 18px !important; font-weight: 600 !important; }
+
         .unit-label { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(4px); border: 1px solid var(--accent); color: white; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; border-width: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: opacity 0.3s ease; }
 
         .leaflet-popup-content-wrapper { background: rgba(18, 18, 24, 0.85) !important; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 16px; color: white; box-shadow: 0 15px 35px rgba(0,0,0,0.6) !important; padding: 5px; }
@@ -193,7 +199,7 @@
                             <p><strong>ID:</strong> ${userId}</p>
                             <div class="badge-container">
                                 <span class="badge" style="background: ${color}; color: ${color === '#ffffff' ? '#000' : '#fff'};">${p.Team || "Civilian"}</span>
-                                ${p.Callsign ? `<span class="badge" style="background: #333; border: 1px solid #555;">${p.Callsign}</span>` : ''}
+                                ${p.Callsign ? `<span class="badge" style="background: #333; border: solid 1px #555;">${p.Callsign}</span>` : ''}
                                 ${staffBadgeHTML}
                             </div>
                         </div>
