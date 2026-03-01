@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alaska State | Secure Checkout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #050505; 
+            --bg-soft: #0d0d11; 
+            --glass: rgba(15, 15, 18, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-dim: #94a3b8; 
+            --accent: #38bdf8;
+            --success: #22c55e;
+            --paypal: #0070ba;
+            --cashapp: #00d632;
+            --roblox: #ececec;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            background: var(--bg);
+            color: white;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .checkout-wrapper {
+            width: 100%;
+            max-width: 550px;
+            padding: 20px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .checkout-card {
+            background: var(--bg-soft);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 40px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            transition: 0.3s;
+        }
+        .back-link:hover { color: white; transform: translateX(-5px); }
+
+        h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+        .subtitle { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 35px; }
+
+        .order-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 35px;
+        }
+
+        .order-title {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .item-list { margin-bottom: 20px; }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+        .summary-row.total {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+
+        .payment-section h3 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+.method-grid {
+    display: flex;    
+    flex-direction: column; 
+    gap: 12px;
+    width: 100%;      
+}
+
+.pay-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    
+    width: 100%;      
+    box-sizing: border-box; 
+    
+    padding: 16px;
+    border-radius: 14px;
+    border: none;
+    font-weight: 800;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+}
+
+        .btn-paypal { background: var(--paypal); color: white; }
+        .btn-paypal:hover { background: #005ea6; transform: translateY(-2px); }
+
+        .btn-cashapp { background: var(--cashapp); color: white; }
+        .btn-cashapp:hover { background: #00b32a; transform: translateY(-2px); }
+
+        .btn-roblox { background: white; color: black; }
+        .btn-roblox:hover { background: #e2e2e2; transform: translateY(-2px); }
+
+        .ticket-notice {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(56, 189, 248, 0.05);
+            border-radius: 12px;
+            border: 1px dashed rgba(56, 189, 248, 0.3);
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="checkout-wrapper">
+    <a href="shop.html" class="back-link"><i class="fas fa-arrow-left"></i> RETURN TO SHOP</a>
+    
+    <div class="checkout-card">
+        <h1>Checkout</h1>
+        <p class="subtitle">Complete your purchase to unlock your perks.</p>
+
+        <div class="order-box">
+            <span class="order-title">Your Selection</span>
+            <div id="item-list" class="item-list"></div>
+            <div class="summary-row total">
+                <span>Total Due</span>
+                <span id="final-total">0</span>
+            </div>
+        </div>
+
+        <div class="payment-section">
+            <h3 id="payment-heading">Select Payment Method</h3>
+            <div id="payment-methods" class="method-grid"></div>
+        </div>
+
+        <div class="ticket-notice">
+            <i class="fas fa-info-circle"></i><br>
+            After paying, please open a <strong>Community Support Ticket</strong> in our Discord server with a screenshot of your receipt to claim your items.
+            <li><a href="https://discord.com/channels/1391154655987241093/1391155156732743700/1474054067796836618" style="color: #ffffff;" target="_blank" class="support-btn">Support</a></li>
+        </div>
+    </div>
+</div>
+
+<script>
+const products = [
+    { link: 'https://www.roblox.com/catalog/96986948279634/Sponsored-Giveaway-everyone', id: 1, name: 'Everyone Ping Sponsored', rbx: 300 },
+    { link: 'https://www.roblox.com/catalog/116241367486103/Paid-Ad-here', id: 2, name: 'Here Ping Paid Ad', rbx: 250},
+    { link: 'https://www.roblox.com/catalog/102673957716176/paid-ad-everyone', id: 3, name: 'Everyone Ping Ad', rbx: 350 },
+    { link: 'https://www.roblox.com/catalog/127967937554907/Paid-Channel', id: 4, name: 'Paid Channel', rbx: 300 },
+    { link: 'https://www.roblox.com/catalog/74396969282286/Instant-Post', id: 5, name: 'Priority (Skip Queue)', rbx: 500 },
+    { link: 'https://www.roblox.com/catalog/74396969282286/Instant-Post', id: 6, name: 'Instant Post', rbx: 2000 },
+    { link: 'https://www.roblox.com/catalog/129535550080274/Alaska', id: 7, name: 'Alaska+', rbx: 100 },
+    { link: 'https://www.roblox.com/catalog/112211871456183/Donation-1', id: 8, name: '1000 Donation', rbx: 1000 },
+    { link: 'https://www.roblox.com/catalog/77558709676973/Donation-2', id: 9, name: '2500 Donation', rbx: 2500 },
+    { link: 'https://www.roblox.com/catalog/73108856672110/Donation-3', id: 10, name: '5000 Donation', rbx: 5000 },
+    { link: 'https://www.roblox.com/catalog/122147842211854/Alaska-State-Merch-Top', id: 11, name: 'Alaska Merch Top', rbx: 15 },
+    { link: 'https://www.roblox.com/catalog/79987343707522/Alaska-Cargos-Merch', id: 12, name: 'Alaska Cargos', rbx: 5 }
+];
+
+    const conversionRate = 0.0125;
+    const cart = JSON.parse(sessionStorage.getItem('checkout_cart')) || [];
+    const currency = sessionStorage.getItem('checkout_currency') || 'RBX';
+
+    function initCheckout() {
+        const itemContainer = document.getElementById('item-list');
+        const totalLabel = document.getElementById('final-total');
+        const methodContainer = document.getElementById('payment-methods');
+        const heading = document.getElementById('payment-heading');
+
+        if (cart.length === 0) {
+            window.location.href = 'shop.html';
+            return;
+        }
+
+        let totalAmount = 0;
+        itemContainer.innerHTML = '';
+
+        cart.forEach(item => {
+            const price = currency === 'USD' ? (item.rbx * conversionRate) : item.rbx;
+            const subtotal = price * item.qty;
+            totalAmount += subtotal;
+
+            itemContainer.innerHTML += `
+                <div class="summary-row">
+                    <span style="color:white; font-weight:600;">${item.name} <small style="color:var(--text-dim); font-weight:400;">x${item.qty}</small></span>
+                    <span>${currency === 'USD' ? '$' : ''}${subtotal.toFixed(currency === 'USD' ? 2 : 0)}</span>
+                </div>
+            `;
+        });
+
+        totalLabel.innerText = currency === 'USD' ? `$${totalAmount.toFixed(2)} USD` : `${totalAmount.toLocaleString()} R$`;
+
+        if (currency === 'USD') {
+            heading.innerText = "Choose USD Method";
+            methodContainer.innerHTML = `
+                <a href="https://paypal.me/nnotclix1" target="_blank" class="pay-btn btn-paypal">
+                    <i class="fab fa-paypal"></i> Pay with PayPal
+                </a>
+                <a href="https://cash.app/$nnotclix" target="_blank" class="pay-btn btn-cashapp">
+                    <i class="fas fa-dollar-sign"></i> Pay with CashApp
+                </a>
+            `;
+        } else {
+            heading.innerText = "Complete Robux Payment";
+            if (cart.length === 1) {
+                const product = products.find(p => p.id === cart[0].id);
+                methodContainer.innerHTML = `
+                    <a href="${product ? product.link : '#'}" target="_blank" class="pay-btn btn-roblox">
+                        <i class="fas fa-gamepad"></i> Buy Roblox Item
+                    </a>
+                `;
+            } else {
+                methodContainer.innerHTML = `
+                    <p style="text-align:center; font-size:0.85rem; color:var(--text-dim); margin-bottom:15px;">
+                        Multiple items detected. Please use our donation board or buy multiple quantities of gamepasses.
+                    </p>
+                    <a href="https://www.roblox.com/communities/35731870/Alaska-State-Roleplay#!/store" target="_blank" class="pay-btn btn-roblox">
+                        <i class="fas fa-external-link-alt"></i> Go to Roblox Group
+                    </a>
+                `;
+            }
+        }
+    }
+
+    window.onload = initCheckout;
+</script>
+
+</body>
+</html>
