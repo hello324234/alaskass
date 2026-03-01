@@ -184,7 +184,7 @@
         .price-row { display: flex; justify-content: space-between; align-items: center; }
         .price { font-size: 1.2rem; font-weight: 800; }
         .price span { font-size: 0.8rem; color: var(--text-dim); margin-left: 4px; }
-        .buy-btn { background: var(--success); color: black; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 800; cursor: pointer; }
+        .buy-btn { background: var(--accent); color: black; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 800; cursor: pointer; }
         .buy-btn a { color: white; text-decoration: none; }
 
         .perks-list { list-style: none; margin-bottom: 25px; }
@@ -451,7 +451,6 @@
     cursor: pointer;
 }
 
-/* Navigation Integration */
 .nav-shop-controls {
     display: flex;
     align-items: center;
@@ -602,12 +601,12 @@
             </a>
             
             <ul class="nav-links">
-                <li><a href="index.html" style="color: white;">Home</a></li>
+                <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="rules.html">Rules</a></li>
                 <li><a href="map.html">Map</a></li>
                 <li><a href="https://discord.gg/alaskas">Discord</a></li>
-                 <li><a href="shop.html" onclick="toggleMenu()">Shop</a></li>
+                 <li><a href="shop.html" onclick="toggleMenu()" style="color: white;">Shop</a></li>
             </ul>
 
         <a href="roblox://placeId=2534724415&launchData=%7B%22psCode%22%3A%22ASRUSA%22%7D" class="btn-premium">JOIN SERVER</a>
@@ -936,12 +935,15 @@ const products = [
 ];
 
 const conversionRate = 0.0125; 
-let currentCurrency = 'RBX';
+let currentCurrency = localStorage.getItem('alaska_currency') || 'RBX';
 let cart = JSON.parse(localStorage.getItem('alaska_cart')) || [];
 
 function toggleCurrency() {
     const slider = document.getElementById('currency-slider');
     currentCurrency = (currentCurrency === 'RBX') ? 'USD' : 'RBX';
+    
+    localStorage.setItem('alaska_currency', currentCurrency); 
+    
     slider.className = `slider ${currentCurrency.toLowerCase()}-active`;
     updateDisplayPrices();
     updateCart();
@@ -1065,6 +1067,11 @@ function buyNow(productId) {
 }
 
 function init() {
+    const slider = document.getElementById('currency-slider');
+    if (slider) {
+        slider.className = `slider ${currentCurrency.toLowerCase()}-active`;
+    }
+    
     updateCart();
     updateDisplayPrices();
 }
