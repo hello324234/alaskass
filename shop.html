@@ -29,7 +29,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: var(--bg); color: white; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 
-/* Fix for the Nav Container to allow the right side to breathe */
 .nav-container {
     width: 90%;
     max-width: 1200px;
@@ -38,14 +37,12 @@
     align-items: center;
 }
 
-/* Ensure the floating controls don't overlap on smaller screens */
 @media (max-width: 1100px) {
     .right-controls {
-        display: none; /* Hide floating on mobile to prevent clutter */
+        display: none;
     }
 }
 
-/* Smooth transition for the green slider */
 .slider {
     box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
 }
