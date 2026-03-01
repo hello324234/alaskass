@@ -3,7 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alaska State Roleplay</title>
+<title>Alaska State Roleplay</title>
+<meta name="title" content="Alaska State Roleplay">
+<meta name="description" content="Experience the most realistic and professional ER:LC community. Scaling the frontier since 2026.">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://alaska-roleplay.xyz/">
+<meta property="og:title" content="Alaska State Roleplay">
+<meta property="og:description" content="Alaska State Roleplay is a new immersive roleplay server based on the game Emergency Response: Liberty County. We didn't just want to make another server; we wanted to create a destination for those who value realism and storytelling.">
+<meta property="og:image" content="https://alaska-roleplay.xyz/logo.png"> 
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://alaska-roleplay.xyz/">
+<meta property="twitter:title" content="Alaska State Roleplay">
+<meta property="twitter:description" content="Experience the most realistic and professional ER:LC community. Scaling the frontier since 2026.">
+<meta property="twitter:image" content="https://alaska-roleplay.xyz/logo.png"> <meta name="theme-color" content="#ffffff">
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -189,8 +202,126 @@
             .footer-grid { grid-template-columns: 1fr; gap: 50px; text-align: center; }
             .footer-bottom { flex-direction: column; gap: 15px; text-align: center; }
         }
+.audio-widget {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 12px 20px;
+    width: 280px;
+    opacity: 0;
+    transform: translateX(30px);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: all;
+}
+
+.audio-widget.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.widget-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.track-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pulse-icon {
+    color: white;
+    font-size: 0.8rem;
+    animation: audio-pulse 2s infinite;
+}
+
+.text-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+}
+
+.track-name {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: white;
+    white-space: nowrap;
+}
+
+.volume-control {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+#volumeSlider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    outline: none;
+}
+
+#volumeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    transition: 0.2s;
+}
+
+#volumeSlider::-webkit-slider-thumb:hover {
+    transform: scale(1.3);
+    background: #38bdf8; 
+}
+
+@keyframes audio-pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+}
     </style>
 </head>
+<audio id="bgMusic" loop>
+    <source src="bgmusic.mp3" type="audio/mpeg">
+</audio>
+
+<div class="audio-widget" id="audioWidget">
+    <div class="widget-content">
+        <div class="track-info">
+            <div class="pulse-icon">
+                <i class="fas fa-volume-up"></i>
+            </div>
+            <div class="text-group">
+                <span class="label">SYSTEM AUDIO</span>
+                <span class="track-name">Alaska Theme</span>
+            </div>
+        </div>
+        
+        <div class="volume-control">
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.2">
+        </div>
+    </div>
+</div>
 <body>
 
     <div class="nav-container">
@@ -317,7 +448,7 @@
             box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
         }
         .status-dot.offline {
-            background: #ef4444;
+            background: #ef4444; /* Red */
         }
     </style>
 
@@ -347,6 +478,24 @@
         function toggleMenu() {
             document.getElementById('mobileMenu').classList.toggle('active');
         }
+
+const music = document.getElementById('bgMusic');
+const widget = document.getElementById('audioWidget');
+const slider = document.getElementById('volumeSlider');
+
+music.volume = slider.value;
+
+window.addEventListener('click', () => {
+    if (music.paused) {
+        music.play().then(() => {
+            widget.classList.add('active');
+        }).catch(err => console.log("Autoplay blocked"));
+    }
+}, { once: true });
+
+slider.addEventListener('input', (e) => {
+    music.volume = e.target.value;
+});
     </script>
 </body>
 </html>
