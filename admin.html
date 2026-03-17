@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alaska State | Owner Panel</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        :root {
+            --bg: #050505;
+            --bg-soft: #0d0d11;
+            --border: rgba(255,255,255,0.08);
+            --text-dim: #94a3b8;
+            --accent: #38bdf8;
+            --danger: #ef4444;
+            --warn: #f59e0b;
+            --success: #22c55e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: white; overflow-x: hidden; }
+
+        /* ─── LOGIN SCREEN ─── */
+        #login-screen {
+            position: fixed; inset: 0; z-index: 9999;
+            background: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .login-card {
+            background: rgba(13,13,17,0.95);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 50px 45px;
+            width: 100%; max-width: 420px;
+            text-align: center;
+            animation: fadeInUp 0.5s ease;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+        }
+        .login-card .shield-icon {
+            width: 60px; height: 60px;
+            background: rgba(56,189,248,0.1);
+            border: 1px solid rgba(56,189,248,0.3);
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; color: var(--accent);
+            margin: 0 auto 20px;
+        }
+        .login-card h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 6px; }
+        .login-card p { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 30px; }
+        .login-field {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 14px;
+            outline: none;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            transition: 0.3s;
+        }
+        .login-field:focus { border-color: var(--accent); box-shadow: 0 0 20px rgba(56,189,248,0.15); }
+        .login-btn {
+            width: 100%; padding: 14px;
+            background: white; color: black;
+            border: none; border-radius: 14px;
+            font-size: 0.95rem; font-weight: 800;
+            cursor: pointer; margin-top: 8px;
+            transition: 0.3s;
+        }
+        .login-btn:hover { background: #e2e8f0; transform: scale(1.02); }
+        .login-error {
+            color: var(--danger); font-size: 0.82rem;
+            margin-top: 12px; display: none;
+        }
+
+        /* ─── MAIN PANEL ─── */
+        #main-panel { display: none; }
+
+        .nav-container {
+            position: fixed; top: 30px;
+            left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 1100px; z-index: 1000;
+        }
+        nav {
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 14px 35px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(5,5,5,0.8);
+        }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; font-weight: 800; font-size: 1.1rem; }
+        .nav-brand img { height: 32px; }
+        .owner-badge {
+            background: rgba(239,68,68,0.15);
+            border: 1px solid rgba(239,68,68,0.4);
+            color: #fca5a5;
+            font-size: 0.7rem; font-weight: 800;
+            padding: 4px 12px; border-radius: 50px;
+            letter-spacing: 1px; text-transform: uppercase;
+        }
+        .logout-btn {
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: #fca5a5;
+            padding: 9px 20px; border-radius: 50px;
+            font-size: 0.8rem; font-weight: 700;
+            cursor: pointer; transition: 0.3s;
+        }
+        .logout-btn:hover { background: rgba(239,68,68,0.2); }
+
+        .status-pill { font-size: 0.75rem; color: var(--text-dim); display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.4); padding: 6px 15px; border-radius: 50px; border: 1px solid var(--border); }
+        .live-dot { width: 8px; height: 8px; background: #444; border-radius: 50%; transition: all 0.4s; }
+        .live-dot.active { background: var(--success); box-shadow: 0 0 12px var(--success); animation: pulse 2s infinite; }
+
+        .wrapper { padding: 130px 5% 50px; max-width: 1600px; margin: 0 auto; animation: fadeIn 0.8s ease-out; }
+        .header-area { text-align: center; margin-bottom: 40px; }
+        .header-area h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; }
+        .header-area span { color: var(--danger); }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: rgba(13,13,17,0.8); backdrop-filter: blur(10px); border: 1px solid var(--border); padding: 20px; border-radius: 20px; transition: 0.3s; }
+        .stat-box:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.15); }
+        .stat-box small { color: var(--text-dim); font-size: 0.7rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        .stat-box div { font-size: 1.4rem; font-weight: 800; margin-top: 5px; color: var(--accent); }
+
+        .controls-bar { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .control-input { flex: 1; min-width: 250px; background: rgba(13,13,17,0.8); backdrop-filter: blur(10px); border: 1px solid var(--border); color: white; padding: 15px 20px; border-radius: 15px; outline: none; transition: 0.3s; font-size: 0.95rem; }
+        .control-input:focus, .control-input:hover { border-color: var(--accent); box-shadow: 0 0 20px rgba(56,189,248,0.15); }
+        select.control-input { flex: 0.3; min-width: 180px; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 1.2rem top 50%; background-size: 0.65rem auto; }
+
+        .map-card { background: rgba(13,13,17,0.8); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 30px; padding: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        #map-canvas { width: 100%; height: 70vh; border-radius: 20px; background: #08080a; }
+
+        /* ─── LEAFLET OVERRIDES ─── */
+        .leaflet-bar a { background: rgba(15,15,18,0.65) !important; backdrop-filter: blur(24px); color: white !important; border-bottom: 1px solid var(--border) !important; transition: 0.2s; }
+        .leaflet-bar a:last-child { border-bottom: none !important; }
+        .leaflet-bar a:hover { background: rgba(30,30,35,0.8) !important; color: var(--accent) !important; }
+        .unit-label { background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); border: 1px solid var(--accent); color: white; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .leaflet-popup-content-wrapper { background: rgba(18,18,24,0.95) !important; backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: 16px; color: white; box-shadow: 0 15px 35px rgba(0,0,0,0.6) !important; padding: 5px; }
+        .leaflet-popup-tip { background: rgba(18,18,24,0.95) !important; }
+        .leaflet-container a.leaflet-popup-close-button { color: var(--text-dim) !important; top: 12px !important; right: 12px !important; }
+        .leaflet-container a.leaflet-popup-close-button:hover { color: white !important; }
+
+        /* ─── ADMIN POPUP ─── */
+        .admin-popup { min-width: 260px; padding: 8px; animation: popupFadeIn 0.3s ease; }
+        .popup-header { display: flex; gap: 14px; align-items: center; margin-bottom: 14px; }
+        .popup-header img { width: 64px; height: 64px; border-radius: 12px; border: 2px solid var(--accent); object-fit: cover; background: #222; }
+        .popup-header .info h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 3px; }
+        .popup-header .info p { font-size: 0.78rem; color: var(--text-dim); margin: 2px 0; }
+        .badge-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .admin-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; border-top: 1px solid var(--border); padding-top: 12px; }
+        .action-btn {
+            display: flex; align-items: center; justify-content: center; gap: 7px;
+            padding: 10px 12px; border-radius: 10px;
+            font-size: 0.78rem; font-weight: 800;
+            cursor: pointer; border: none;
+            transition: 0.2s; letter-spacing: 0.3px;
+        }
+        .action-btn.kick {
+            background: rgba(245,158,11,0.15);
+            border: 1px solid rgba(245,158,11,0.35);
+            color: #fbbf24;
+        }
+        .action-btn.kick:hover { background: rgba(245,158,11,0.28); transform: scale(1.03); }
+        .action-btn.ban {
+            background: rgba(239,68,68,0.15);
+            border: 1px solid rgba(239,68,68,0.35);
+            color: #fca5a5;
+        }
+        .action-btn.ban:hover { background: rgba(239,68,68,0.28); transform: scale(1.03); }
+
+        /* ─── CONFIRM MODAL ─── */
+        #confirm-modal {
+            position: fixed; inset: 0; z-index: 9000;
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+            display: none; align-items: center; justify-content: center;
+        }
+        #confirm-modal.show { display: flex; }
+        .modal-card {
+            background: rgba(13,13,17,0.98);
+            border: 1px solid var(--border);
+            border-radius: 24px; padding: 35px 30px;
+            width: 100%; max-width: 380px;
+            text-align: center; animation: fadeInUp 0.3s ease;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+        }
+        .modal-icon { font-size: 2.5rem; margin-bottom: 15px; }
+        .modal-card h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 8px; }
+        .modal-card p { color: var(--text-dim); font-size: 0.87rem; margin-bottom: 25px; line-height: 1.6; }
+        .modal-card p strong { color: white; }
+        .modal-actions { display: flex; gap: 10px; }
+        .modal-cancel { flex: 1; padding: 12px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text-dim); border-radius: 12px; font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .modal-cancel:hover { background: rgba(255,255,255,0.1); color: white; }
+        .modal-confirm { flex: 1; padding: 12px; border: none; border-radius: 12px; font-size: 0.88rem; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .modal-confirm.kick { background: #f59e0b; color: black; }
+        .modal-confirm.ban { background: #ef4444; color: white; }
+        .modal-confirm:hover { transform: scale(1.03); opacity: 0.9; }
+
+        /* ─── TOAST ─── */
+        #toast {
+            position: fixed; bottom: 35px; left: 50%; transform: translateX(-50%) translateY(80px);
+            background: rgba(18,18,24,0.95); border: 1px solid var(--border);
+            color: white; padding: 13px 25px; border-radius: 50px;
+            font-size: 0.85rem; font-weight: 700;
+            z-index: 9999; transition: transform 0.4s cubic-bezier(0.2,0,0.2,1);
+            backdrop-filter: blur(16px); display: flex; align-items: center; gap: 10px;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); }
+        #toast .toast-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popupFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.7); } 70% { box-shadow: 0 0 0 6px rgba(34,197,94,0); } 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); } }
+    </style>
+</head>
+<body>
+
+<!-- ═══ LOGIN SCREEN ═══ -->
+<div id="login-screen">
+    <div class="login-card">
+        <div class="shield-icon"><i class="fas fa-shield-halved"></i></div>
+        <h2>Owner Panel</h2>
+        <p>Alaska State — Restricted Access</p>
+        <input type="text" id="login-user" class="login-field" placeholder="Username" autocomplete="off">
+        <input type="password" id="login-pass" class="login-field" placeholder="Password" autocomplete="off">
+        <button class="login-btn" onclick="attemptLogin()"><i class="fas fa-arrow-right-to-bracket" style="margin-right:8px;"></i>Access Panel</button>
+        <p class="login-error" id="login-error"><i class="fas fa-circle-xmark" style="margin-right:6px;"></i>Invalid credentials. Try again.</p>
+    </div>
+</div>
+
+<!-- ═══ MAIN PANEL ═══ -->
+<div id="main-panel">
+    <div class="nav-container">
+        <nav>
+            <a href="index.html" class="nav-brand">
+                <img src="logo.png" alt="Logo">
+                <span>ALASKA.</span>
+            </a>
+            <span class="owner-badge"><i class="fas fa-shield-halved" style="margin-right:5px;"></i>Owner Panel</span>
+            <div style="display:flex; align-items:center; gap:15px;">
+                <div class="status-pill">
+                    <div class="live-dot" id="sync-dot"></div>
+                    <span id="sync-text">CONNECTING...</span>
+                </div>
+                <button class="logout-btn" onclick="logout()"><i class="fas fa-right-from-bracket" style="margin-right:6px;"></i>Logout</button>
+            </div>
+        </nav>
+    </div>
+
+    <div class="wrapper">
+        <div class="header-area">
+            <h1>Live Player <span>Admin</span> Map</h1>
+            <p style="color: var(--text-dim);">Click any player to kick or ban them from the server</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <small>Server Population</small>
+                <div id="stat-pop">0 / 40</div>
+            </div>
+            <div class="stat-box">
+                <small>Active Units</small>
+                <div id="stat-units">0</div>
+            </div>
+            <div class="stat-box">
+                <small>Last Sync</small>
+                <div id="stat-time">--:--:--</div>
+            </div>
+            <div class="stat-box">
+                <small>Actions Taken</small>
+                <div id="stat-actions" style="color: var(--danger);">0</div>
+            </div>
+        </div>
+
+        <div class="controls-bar">
+            <input type="text" id="search-input" class="control-input" placeholder="Search by Username or Callsign...">
+            <select id="team-filter" class="control-input">
+                <option value="all">🌐 All Units</option>
+                <option value="pd">🚓 Police</option>
+                <option value="sheriff">🚔 Sheriff</option>
+                <option value="fd">🚑 Fire & EMS</option>
+                <option value="dot">🚧 DOT</option>
+                <option value="civ">🧑 Civilians</option>
+                <option value="staff">🛡️ Server Staff</option>
+            </select>
+        </div>
+
+        <div class="map-card">
+            <div id="map-canvas"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ CONFIRM MODAL ═══ -->
+<div id="confirm-modal">
+    <div class="modal-card">
+        <div class="modal-icon" id="modal-icon"></div>
+        <h3 id="modal-title"></h3>
+        <p id="modal-body"></p>
+        <div class="modal-actions">
+            <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+            <button class="modal-confirm" id="modal-confirm-btn" onclick="executeAction()"></button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ TOAST ═══ -->
+<div id="toast">
+    <div class="toast-dot" id="toast-dot"></div>
+    <span id="toast-msg"></span>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    // ─── LOGIN ───
+    function attemptLogin() {
+        const user = document.getElementById('login-user').value.trim();
+        const pass = document.getElementById('login-pass').value.trim();
+        const err = document.getElementById('login-error');
+
+        if (user === 'owner' && pass === 'owner123') {
+            document.getElementById('login-screen').style.opacity = '0';
+            document.getElementById('login-screen').style.transition = 'opacity 0.4s';
+            setTimeout(() => {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-panel').style.display = 'block';
+                initMap();
+            }, 400);
+        } else {
+            err.style.display = 'block';
+            const card = document.querySelector('.login-card');
+            card.style.animation = 'none';
+            card.offsetHeight;
+            card.style.animation = 'shake 0.4s ease';
+        }
+    }
+
+    // Allow Enter key on login
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+            attemptLogin();
+        }
+    });
+
+    function logout() {
+        document.getElementById('main-panel').style.display = 'none';
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('login-screen').style.opacity = '1';
+        document.getElementById('login-user').value = '';
+        document.getElementById('login-pass').value = '';
+        document.getElementById('login-error').style.display = 'none';
+    }
+
+    // ─── MAP + DATA ───
+    let map, markers = {}, latestData = { Players: [] }, avatarCache = {};
+    let currentSearch = "", currentFilter = "all";
+    let actionCount = 0;
+    let pendingAction = null;
+
+    function initMap() {
+        map = L.map('map-canvas', { crs: L.CRS.Simple, minZoom: -2, maxZoom: 1 });
+        const bounds = [[0,0],[3120,3120]];
+        L.imageOverlay('https://alpha.duckybot.xyz/assets/erlc-map.png', bounds).addTo(map);
+        map.fitBounds(bounds);
+
+        document.getElementById('search-input').addEventListener('input', e => { currentSearch = e.target.value.toLowerCase(); renderMap(); });
+        document.getElementById('team-filter').addEventListener('change', e => { currentFilter = e.target.value.toLowerCase(); renderMap(); });
+
+        setInterval(syncData, 10000);
+        syncData();
+    }
+
+    function getTeamColor(team) {
+        team = (team || "").toLowerCase();
+        if (team.includes("police")) return "#2563eb";
+        if (team.includes("sheriff")) return "#d97706";
+        if (team.includes("fire") || team.includes("ems")) return "#dc2626";
+        if (team.includes("dot")) return "#f59e0b";
+        return "#ffffff";
+    }
+
+    function checkFilterMatch(player) {
+        const team = (player.Team || "").toLowerCase();
+        const cleanName = player.Player.split(':')[0].toLowerCase();
+        const callsign = (player.Callsign || "").toLowerCase();
+        const permission = (player.Permission || "Normal").toLowerCase();
+        if (currentSearch && !cleanName.includes(currentSearch) && !callsign.includes(currentSearch)) return false;
+        if (currentFilter === "all") return true;
+        if (currentFilter === "pd" && team.includes("police")) return true;
+        if (currentFilter === "sheriff" && team.includes("sheriff")) return true;
+        if (currentFilter === "fd" && (team.includes("fire") || team.includes("ems"))) return true;
+        if (currentFilter === "dot" && team.includes("dot")) return true;
+        if (currentFilter === "civ" && (team.includes("civilian") || team === "")) return true;
+        if (currentFilter === "staff" && (permission.includes("mod") || permission.includes("admin") || permission.includes("owner"))) return true;
+        return false;
+    }
+
+    function buildPopup(p) {
+        const nameParts = p.Player.split(':');
+        const cleanName = nameParts[0];
+        const userId = nameParts[1] || "Unknown";
+        const permission = p.Permission || "Normal";
+        const color = getTeamColor(p.Team);
+        const avatarUrl = avatarCache[userId] || `https://tr.rbxcdn.com/38c35698b4c09d06b5a32b210214a601/150/150/AvatarHeadshot/Png`;
+
+        const staffBadge = permission !== "Normal"
+            ? `<span class="badge" style="background:#9333ea;border:1px solid #c084fc;">${permission}</span>` : "";
+
+        return `
+            <div class="admin-popup">
+                <div class="popup-header">
+                    <img src="${avatarUrl}" onerror="this.src='https://tr.rbxcdn.com/38c35698b4c09d06b5a32b210214a601/150/150/AvatarHeadshot/Png'">
+                    <div class="info">
+                        <h3>${cleanName}</h3>
+                        <p><i class="fas fa-id-badge" style="margin-right:5px;opacity:0.5;"></i>ID: ${userId}</p>
+                        <div class="badge-row">
+                            <span class="badge" style="background:${color};color:${color==='#ffffff'?'#000':'#fff'};">${p.Team || "Civilian"}</span>
+                            ${p.Callsign ? `<span class="badge" style="background:#333;border:1px solid #555;">${p.Callsign}</span>` : ''}
+                            ${staffBadge}
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-actions">
+                    <button class="action-btn kick" onclick="confirmAction('kick','${cleanName}','${userId}')">
+                        <i class="fas fa-boot"></i> Kick
+                    </button>
+                    <button class="action-btn ban" onclick="confirmAction('ban','${cleanName}','${userId}')">
+                        <i class="fas fa-ban"></i> Ban
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderMap() {
+        const currentNames = [];
+        let units = 0;
+
+        latestData.Players.forEach(p => {
+            if (!checkFilterMatch(p)) return;
+
+            const nameParts = p.Player.split(':');
+            const cleanName = nameParts[0];
+            const color = getTeamColor(p.Team);
+            const label = p.Callsign ? `${cleanName} [${p.Callsign}]` : cleanName;
+            const y = 3120 - p.Location.LocationZ;
+            const x = p.Location.LocationX;
+
+            currentNames.push(cleanName);
+            units++;
+
+            const popupHTML = buildPopup(p);
+
+            if (markers[cleanName]) {
+                markers[cleanName].setLatLng([y, x]);
+                if (!markers[cleanName].isPopupOpen()) markers[cleanName].setPopupContent(popupHTML);
+            } else {
+                markers[cleanName] = L.circleMarker([y, x], {
+                    radius: 6, color, fillOpacity: 1, weight: 2
+                }).addTo(map)
+                  .bindTooltip(label, { permanent: true, direction: 'top', className: 'unit-label', offset: [0,-5] })
+                  .bindPopup(popupHTML);
+            }
+        });
+
+        Object.keys(markers).forEach(name => {
+            if (!currentNames.includes(name)) { map.removeLayer(markers[name]); delete markers[name]; }
+        });
+
+        document.getElementById('stat-units').innerText = units;
+    }
+
+    async function fetchRobloxAvatars(userIds) {
+        if (!userIds.length) return;
+        try {
+            const proxy = 'https://api.allorigins.win/get?url=';
+            const target = encodeURIComponent(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userIds.join(',')}&size=150x150&format=Png&isCircular=false`);
+            const res = await fetch(proxy + target);
+            const data = await res.json();
+            const json = JSON.parse(data.contents);
+            if (json.data) json.data.forEach(item => { avatarCache[item.targetId] = item.imageUrl; });
+        } catch(e) { console.error("Avatar fetch failed", e); }
+    }
+
+    async function syncData() {
+        try {
+            const res = await fetch('/api/erlc-map-api');
+            const data = await res.json();
+            latestData = data;
+
+            const newIds = [];
+            data.Players.forEach(p => {
+                const uid = p.Player.split(':')[1];
+                if (uid && !avatarCache[uid]) newIds.push(uid);
+            });
+            if (newIds.length) await fetchRobloxAvatars(newIds);
+
+            document.getElementById('stat-pop').innerText = `${data.CurrentPlayers} / ${data.MaxPlayers}`;
+            document.getElementById('stat-time').innerText = new Date().toLocaleTimeString();
+            document.getElementById('sync-text').innerText = "LIVE CONNECTION";
+            document.getElementById('sync-dot').classList.add('active');
+            renderMap();
+        } catch(e) {
+            console.error("Sync error:", e);
+            document.getElementById('sync-text').innerText = "API ERROR";
+            document.getElementById('sync-dot').classList.remove('active');
+        }
+    }
+
+    // ─── KICK / BAN ───
+    function confirmAction(type, name, userId) {
+        pendingAction = { type, name, userId };
+        const isKick = type === 'kick';
+        document.getElementById('modal-icon').innerHTML = isKick
+            ? '<i class="fas fa-boot" style="color:#f59e0b;"></i>'
+            : '<i class="fas fa-ban" style="color:#ef4444;"></i>';
+        document.getElementById('modal-title').innerText = isKick ? `Kick ${name}?` : `Ban ${name}?`;
+        document.getElementById('modal-body').innerHTML = isKick
+            ? `This will remove <strong>${name}</strong> from the server. They can rejoin immediately.`
+            : `This will permanently ban <strong>${name}</strong> (ID: ${userId}) from the server.`;
+        const btn = document.getElementById('modal-confirm-btn');
+        btn.innerText = isKick ? 'Kick Player' : 'Ban Player';
+        btn.className = `modal-confirm ${type}`;
+        document.getElementById('confirm-modal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('confirm-modal').classList.remove('show');
+        pendingAction = null;
+    }
+
+    async function executeAction() {
+        if (!pendingAction) return;
+        const { type, name, userId } = pendingAction;
+        closeModal();
+        map.closePopup();
+
+        try {
+            // POST to your backend admin endpoint
+            const res = await fetch(`/api/admin/${type}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, username: name })
+            });
+
+            if (res.ok) {
+                actionCount++;
+                document.getElementById('stat-actions').innerText = actionCount;
+                showToast(
+                    type === 'kick' ? `#f59e0b` : `#ef4444`,
+                    type === 'kick'
+                        ? `⚡ ${name} has been kicked from the server`
+                        : `🔨 ${name} has been banned from the server`
+                );
+                // Remove marker immediately
+                if (markers[name]) { map.removeLayer(markers[name]); delete markers[name]; }
+            } else {
+                showToast('#ef4444', `❌ Action failed — check your backend API`);
+            }
+        } catch(e) {
+            showToast('#ef4444', `❌ Request failed — is the server running?`);
+        }
+    }
+
+    // ─── TOAST ───
+    function showToast(color, msg) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-dot').style.background = color;
+        document.getElementById('toast-dot').style.boxShadow = `0 0 8px ${color}`;
+        document.getElementById('toast-msg').innerText = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    // Close modal on backdrop click
+    document.getElementById('confirm-modal').addEventListener('click', e => {
+        if (e.target === document.getElementById('confirm-modal')) closeModal();
+    });
+</script>
+</body>
+</html>
