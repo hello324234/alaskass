@@ -272,7 +272,7 @@
 
         const map = L.map('map-canvas', { crs: L.CRS.Simple, minZoom: -2, maxZoom: 1 });
         const bounds = [[0, 0], [3120, 3120]];
-        L.imageOverlay('https://alpha.duckybot.xyz/assets/erlc-map.png', bounds).addTo(map);
+        L.imageOverlay('https://api.policeroleplay.community/maps/fall_blank.png', bounds).addTo(map);
         map.fitBounds(bounds);
 
         let markers = {};
